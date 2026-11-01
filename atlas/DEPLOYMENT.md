@@ -25,3 +25,12 @@ For the first publication, use GitHub repository **Settings → Pages → Build 
 To verify: read the Pages URL from repository settings/API, request its HTML and `data/research.json`, check actual JS/CSS responses, then open it in a WebGL-capable browser and enter the Three Gorges. Keep the explicit evidence-gap notices: the bundled atlas has no verified historic water masks, affected-settlement dataset or DEM.
 
 From this cloud environment, GitHub administration and HTTP validation need `api.github.com` and `penson88.github.io` in the active network policy, not merely a saved draft. Git repository access does not establish Pages administration scope. If the API reports insufficient permission, enable the first Pages publication in the repository UI; do not paste tokens into chat.
+
+## Publication attempt: 2026-11-01
+
+Confirmed remote source commit: `57aedc07de367dde4c1e7b792d9f6e6675ae07e2` on `submerged-geographies`.
+Confirmed remote static site commit: `f7f95e35eee9f4f6cf063ec5f99ab37957da5928` on `gh-pages`.
+The ordinary Git pushes succeeded and both refs were independently read back with `git ls-remote`.
+No existing Pages branch was overwritten. Course `main` remains unchanged.
+
+Pages activation and public HTTP availability remain unconfirmed. Both `api.github.com` and `penson88.github.io` were still denied by the active proxy policy after the allowlist was saved to the environment draft. The running environment still reported revision 1 with no custom allowed hosts. Saving that draft does not apply it. To finish without changing the cloud runtime, open the repository Pages settings and select **Deploy from a branch / gh-pages / (root)**, then save. Only the repository owner/admin can complete a UI-only setting when the agent cannot reach the administrative API. Do not treat the expected website URL as verified live until GitHub completes its Pages build.
