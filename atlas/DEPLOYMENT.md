@@ -33,4 +33,10 @@ Confirmed remote static site commit: `f7f95e35eee9f4f6cf063ec5f99ab37957da5928` 
 The ordinary Git pushes succeeded and both refs were independently read back with `git ls-remote`.
 No existing Pages branch was overwritten. Course `main` remains unchanged.
 
-Pages activation and public HTTP availability remain unconfirmed. Both `api.github.com` and `penson88.github.io` were still denied by the active proxy policy after the allowlist was saved to the environment draft. The running environment still reported revision 1 with no custom allowed hosts. Saving that draft does not apply it. To finish without changing the cloud runtime, open the repository Pages settings and select **Deploy from a branch / gh-pages / (root)**, then save. Only the repository owner/admin can complete a UI-only setting when the agent cannot reach the administrative API. Do not treat the expected website URL as verified live until GitHub completes its Pages build.
+GitHub subsequently triggered its native **pages build and deployment** workflow. Its public run record confirmed **WORKFLOW_RUN_STATUS_COMPLETED / WORKFLOW_RUN_CONCLUSION_SUCCESS** in 50 seconds, with the deployment URL:
+
+**https://penson88.github.io/skills-introduction-to-github/**
+
+Deployment evidence: https://github.com/Penson88/skills-introduction-to-github/actions/runs/41351581837
+
+No manual Pages activation is pending. The GitHub-reported deployment succeeded. Direct HTTP/browser validation of the public site from this executor remains blocked by the active network policy for `penson88.github.io`; local production-subpath browser checks passed with no failed assets or JavaScript errors. `api.github.com` is also still blocked in the running revision despite the saved allowlist draft. The deployment result was read through GitHub's permitted public workflow HTML, without bypassing the proxy or extracting credentials.
