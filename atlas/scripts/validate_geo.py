@@ -4,7 +4,7 @@ from pathlib import Path
 from shapely.geometry import shape
 ROOT=Path(__file__).resolve().parents[1]/'public'
 r=json.loads((ROOT/'data/research.json').read_text())
-for name in ['countries','rivers','places']:
+for name in ['countries','rivers','places','dam']:
  fc=json.loads((ROOT/f'data/{name}.geojson').read_text())
  for f in fc['features']:
   g=shape(f['geometry'])
@@ -21,3 +21,9 @@ for o in r['observations']:
   if not coverage.covers(g):raise ValueError(f'Water outside valid coverage: {o["id"]}')
  print(o['id'],': valid polygons within common observation coverage')
 print('GIS audit complete. Valid topology does not establish historical truth or observational accuracy.')
+
+for a in r['archives']:
+ if a.get('residence',{}).get('footprintUrl'):
+  for f in json.loads((ROOT/a['residence']['footprintUrl'].lstrip('/')).read_text())['features']:
+   g=shape(f['geometry'])
+   if g.is_empty or not g.is_valid:raise ValueError('Invalid residential footprint: '+a['id'])

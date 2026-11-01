@@ -25,7 +25,7 @@ For deployment later, serve `dist/` from an HTTPS static host. The build uses re
 
 ## What works now
 
-- Real, locally served Natural Earth geographic vectors; China locator, Yangtze and tributaries, scale bar, geographic attribution and zoom navigation.
+- Real, locally served Natural Earth geographic vectors; full-reservoir initial view plus China locator, Yangtze and tributaries, scale bar, geographic attribution and zoom navigation.
 - Research-window outline (editorial bounding box, **not a reservoir boundary**), three spatial scales and city reference locations.
 - Three independently controlled **research** layers. They are currently empty: the visible river line is undated basemap context, not historical water evidence.
 - Archive index, category filters, clickable source-located reference points, bilingual record panels and optional image / video / audio fields.
@@ -36,7 +36,7 @@ For deployment later, serve `dist/` from an HTTPS static host. The build uses re
 
 ## Deliberate limits
 
-Read [DATA_GAPS.md](DATA_GAPS.md) before exhibiting the work. No historical or reservoir-era water masks, verified affected settlements, migration routes, archival images, or regional DEM are bundled. Those features are not simulated. The dam marker is an explicitly approximate regional orientation point, pending independent coordinate-source verification; it is not a surveyed dam footprint. Reference city coordinates are source-checked, but their historical period / social impact is not established. Close zoom does not improve the original map's resolution.
+Read [DATA_GAPS.md](DATA_GAPS.md) before exhibiting the work. No historical or reservoir-era water masks, verified affected settlements, migration routes, archival images, or regional DEM are bundled. Those features are not simulated. The dam marker now preserves the WRI source inventory coordinate (WRI1000452, CC BY 4.0); positional accuracy is unspecified and it is not a surveyed dam footprint. Reference city coordinates are source-checked, but their historical period / social impact is not established. Close zoom does not improve the original map's resolution.
 
 ## Validate
 
@@ -133,3 +133,13 @@ tests/                      unit, raster pipeline and browser tests
 ```
 
 [DATA_SOURCES.md](DATA_SOURCES.md) · [RESEARCH_METHOD.md](RESEARCH_METHOD.md) · [DATA_GAPS.md](DATA_GAPS.md) · [VALIDATION.md](VALIDATION.md)
+
+## Three-period reservoir views
+
+The atlas now opens on the **whole reservoir research window** (106.2–111.6° E, 29.2–31.5° N; a navigation rectangle, not the actual inundation boundary). The three prominent map buttons select Before the Dam, Submergence & Displacement, and Engineered Waters. Independent overlay switches remain available under **Overlay visibility**. The China overview is accessible through the wordmark / breadcrumb.
+
+The second view can play **actual imported observation frames only**, with pause, three speeds and automatic stop at the final frame. It requires at least two masks with the same audited coverage, classification and resolution. No temporal interpolation, width pulsing, river-buffer growth or 175 m terrain fill is substituted. With no real masks imported, playback remains disabled and explains the gap. The newly classified-water difference is a separate derived overlay, not a claim of permanent dam-caused inundation.
+
+**Where did people live?** is filtered by a documented habitation period, independently of the undated reference city dataset. Old city names are hidden from historical maps unless the reader explicitly enables undated reference places. See [RESIDENTIAL_DATA.md](RESIDENTIAL_DATA.md) for the record schema, footprint requirements and limitations. No dated habitation data is currently bundled; a zero-record status describes missing evidence, not an uninhabited landscape.
+
+To reproduce the dam inventory extraction: `python3 scripts/fetch_dam.py`. This downloads the pinned WRI CSV, selects only WRI1000452 and writes `dam.geojson` plus original-byte SHA-256 provenance. Attribution is visible on the map and in the source inventory. No facilities commissioning field is reused as a dated water observation.

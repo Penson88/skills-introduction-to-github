@@ -31,3 +31,12 @@ Expected limits / warnings:
 ## Deployment preparation
 
 GitHub Pages resource-path fixes: 10 unit tests and 3 browser tests passed; production build passed. An actual Chromium request to a locally served `/skills-introduction-to-github/` production build loaded the map and navigated to the Yichang archive without JavaScript errors or failed asset responses. This validates the project-subpath build, not a public HTTP deployment. See `DEPLOYMENT.md` for publication status.
+
+## Full-reservoir temporal layers update
+
+- `npm test`: **15 passed**, including 5 new checks of inhabited-period boundaries, refusal to use undated source leads as homes, sorted compatible observation frames, invalid residence evidence rejection, and layer-specific years.
+- `npm run test:e2e`: **3 passed** after the update. Browser fixtures verify three map buttons, disabled real-data playback, old/new residence changes with the selected year, play/pause/end state, speed control and the existing comparison guards. Fixtures are explicitly synthetic and never ship.
+- `npm run data:validate:gis`: passed for 177 country polygons, 238 river lines, 3 reference cities and the WRI dam point; current imported residential/water collections remain empty.
+- Production build and repository diff checks passed. WRI coordinate bytes match the pinned CSV extraction. Updated desktop/mobile screenshots are generated under ignored `test-results/`.
+
+The requested real historical inhabitation and changing-water visualisation is **not yet scientifically populated**. No source-confirmed historic water masks or dated residential footprints have been acquired. Implementation readiness and scientific data readiness remain separate.

@@ -5,7 +5,9 @@ test('map, archive, honest gaps, timeline, languages and sources',async({page})=
  await expect(page.getByText('GEOGRAPHIC CONTEXT LOADED',{exact:false})).toBeVisible();
  await expect(page.locator('.maplibregl-canvas').first()).toBeVisible();
  await expect(page.getByRole('button',{name:'Compare water extents'})).toBeDisabled();
+ await page.getByRole('button',{name:'02 Submergence & displacement'}).click();await expect(page.getByRole('button',{name:'Play water changes'})).toBeDisabled();await page.getByRole('button',{name:'01 Before the dam'}).click();
  await page.screenshot({path:'test-results/atlas-desktop.png',fullPage:true});
+ await page.getByRole('button',{name:'Return to China overview'}).click();
  await page.getByRole('button',{name:'ENTER THE THREE GORGES'}).click();
  await expect(page.getByRole('combobox',{name:'Research location'})).toBeVisible();
  await page.getByRole('combobox',{name:'Research location'}).selectOption('REF-001');
@@ -15,6 +17,7 @@ test('map, archive, honest gaps, timeline, languages and sources',async({page})=
  await page.locator('.archive-filter select').selectOption('settlements');
  await expect(page.getByText('No verified records in this category yet.')).toBeVisible();
  await page.getByRole('button',{name:'Atlas',exact:true}).click();
+ await page.getByText('Overlay visibility',{exact:true}).click();
  const toggle=page.getByRole('switch',{name:'The living river'});await toggle.click();await expect(toggle).toHaveAttribute('aria-checked','false');await toggle.click();
  await page.locator('.timeline-dates button').filter({hasText:'2006'}).click();await expect(page.locator('.timeline-title strong')).toContainText('2006');
  await page.getByRole('button',{name:'Method & sources'}).click();await expect(page.getByRole('dialog')).toBeVisible();await expect(page.getByRole('heading',{name:'Natural Earth · Rivers + lake centerlines'})).toBeVisible();await page.keyboard.press('Escape');await expect(page.getByRole('dialog')).toHaveCount(0);
@@ -27,7 +30,7 @@ test('small-screen layout and map source error remain usable',async({page})=>{
  await page.goto('/');await expect(page.getByText('GEOGRAPHIC CONTEXT LOADED',{exact:false})).toBeVisible();
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBe(true);
  await page.screenshot({path:'test-results/atlas-mobile.png',fullPage:true});
- await page.getByRole('button',{name:'Relief',exact:false}).click();await expect(page.getByRole('status')).toContainText('Relief unavailable');
+ await page.getByRole('button',{name:'Relief',exact:false}).click();await expect(page.locator('.notice')).toContainText('Relief unavailable');
  await page.getByRole('button',{name:'Dismiss message'}).click();
  await page.getByRole('button',{name:'Method & sources'}).click();await expect(page.getByRole('dialog')).toBeVisible();
  expect(await page.locator('dialog').evaluate(el=>el.scrollWidth<=el.clientWidth+1)).toBe(true);
@@ -38,11 +41,17 @@ test('synthetic test-only imports enable aligned swipe and reject tampered cover
  const polygon=(east:number)=>({type:'FeatureCollection',features:[{type:'Feature',properties:{fixture:'SYNTHETIC TEST ONLY'},geometry:{type:'Polygon',coordinates:[[[110,30],[east,30],[east,31],[110,31],[110,30]]]}}]});
  const coverage=JSON.stringify(polygon(112));const hash=createHash('sha256').update(coverage).digest('hex');
  const observation=(year:number)=>({id:`test-${year}`,year,title:'SYNTHETIC TEST ONLY',sourceUrl:'https://example.org/test',source:'Synthetic browser fixture',license:'Test only',dateRange:[`${year}-01-01`,`${year}-12-31`],crs:'OGC:CRS84',method:'Synthetic test; not research data',resolution:30,coverageId:'sha256:'+hash,coverageUrl:'/data/test-coverage.geojson',classification:'annual-seasonal-and-permanent',dataUrl:`/data/test-${year}.geojson`});
- await page.route('**/data/research.json',r=>r.fulfill({json:{version:1,observations:[observation(1987),observation(2021)],archives:[],terrain:null}}));
+ const home=(id:string,fromYear:number,toYear:number)=>({id,title:{en:`SYNTHETIC ${id}`,zh:`测试 ${id}`},category:'settlements',period:{en:'Synthetic period',zh:'测试时期'},summary:{en:'Synthetic test only',zh:'仅用于测试'},notes:{en:'Not real evidence',zh:'非真实证据'},coordinates:[110.5,30.5],certainty:'source-located',evidence:'documented',source:'Synthetic browser fixture',sourceUrl:'https://example.org/test',rights:'Test only',impact:{en:'No actual impact',zh:'无真实影响'},residence:{fromYear,toYear,kind:'residential-footprint',sourceUrl:'https://example.org/test',method:'Synthetic fixture only',footprintUrl:'/data/test-homes.geojson'}});
+ await page.route('**/data/test-homes.geojson',r=>r.fulfill({json:polygon(111)}));
+ await page.route('**/data/research.json',r=>r.fulfill({json:{version:1,observations:[observation(1987),observation(2021)],archives:[home('OLD-TOWN',1980,1999),home('NEW-TOWN',2000,2021)],terrain:null}}));
  await page.route('**/data/test-coverage.geojson',r=>r.fulfill({contentType:'application/json',body:coverage}));
  await page.route('**/data/test-1987.geojson',r=>r.fulfill({json:polygon(111)}));
  await page.route('**/data/test-2021.geojson',r=>r.fulfill({json:polygon(112)}));
- await page.goto('/');const button=page.getByRole('button',{name:'Compare water extents'});await expect(button).toBeEnabled();
+ await page.goto('/');
+ await expect(page.getByRole('button',{name:'SYNTHETIC OLD-TOWN',exact:true})).toBeVisible();await expect(page.getByRole('button',{name:'SYNTHETIC NEW-TOWN',exact:true})).toHaveCount(0);
+ await page.getByRole('button',{name:'02 Submergence & displacement'}).click();await expect(page.getByRole('button',{name:'SYNTHETIC NEW-TOWN',exact:true})).toBeVisible();await expect(page.getByRole('button',{name:'SYNTHETIC OLD-TOWN',exact:true})).toHaveCount(0);
+ await page.getByRole('combobox',{name:'Playback speed'}).selectOption('900');await page.getByRole('button',{name:'Play water changes'}).click();await expect(page.locator('.timeline-title strong')).toContainText('1987');await expect(page.locator('.timeline-title strong')).toContainText('2021');await expect(page.getByRole('button',{name:'Play water changes'})).toHaveAttribute('aria-pressed','false');
+ const button=page.getByRole('button',{name:'Compare water extents'});await expect(button).toBeEnabled();
  await button.click();await expect(page.locator('.comparison-map canvas')).toBeVisible();
  const slider=page.getByRole('slider',{name:'Historical contemporary comparison divider'});await slider.fill('65');await expect(page.locator('.comparison-map')).toHaveCSS('clip-path','inset(0px 0px 0px 65%)');
  await page.locator('.opacity-label input').fill('0.35');await expect(page.locator('.opacity-label')).toContainText('35%');

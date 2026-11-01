@@ -27,7 +27,7 @@ Coordinate decimals reproduce dataset values, not measured positional accuracy. 
 ## Editorial annotations (not acquired GIS evidence)
 
 - Dashed study window: **106.2–111.6° E, 29.2–31.5° N**. A navigation rectangle, not a reservoir outline, catchment, administrative area or impact boundary.
-- Dam vicinity: **approximately 111° E, 30.8° N**, a deliberately rounded regional orientation point. Independent coordinate-source verification remains outstanding. No surveyed footprint, water level, engineering dimensions or historical precision is asserted. It is styled and labelled approximate, and must be replaced with an attributable geographic feature before making precision claims.
+- Dam point: now directly retained from **WRI Global Power Plant Database, WRI1000452**, 111.0032° E / 30.8235° N. Source inventory point only; positional accuracy unspecified. See the acquired-source addition below. No water level or surveyed footprint is inferred.
 - Timeline years are research windows. They do not assert operational milestones, dates of valid scenes or water elevations.
 
 ## Candidate sources — not acquired or mapped
@@ -42,8 +42,23 @@ Coordinate decimals reproduce dataset values, not measured positional accuracy. 
 | AWS Open Data terrain tiles | https://s3.amazonaws.com/elevation-tiles-prod/terrarium/7/104/52.png | Candidate test tile only | Proxy returned 403; no tile acquired. This regional access probe does not validate DEM source lineage or licensing. No AWS tiles are used. |
 | MapLibre demonstration terrain | https://raw.githubusercontent.com/maplibre/demotiles/gh-pages/terrain-tiles/tiles.json | Descriptor names `jaxa_terrainrgb_N047E011` | Descriptor retrieved and inspected. Alpine tile-set identity does not establish Three Gorges coverage. Rejected as regional terrain evidence; no tiles used. |
 
-No restricted service was bypassed. A new host allowlist would be needed to retry blocked official sources from this environment. That alone would not supply data authentication, source review or a historical dataset. No network settings were changed for this task.
+No restricted service was bypassed. A new host allowlist would be needed to retry blocked official sources from this environment. That alone would not supply data authentication, source review or a historical dataset. The initial source audit did not change network settings; see the later draft additions recorded below.
 
 ## Evidence to acquire next
 
 Prioritise at least one modest research area supported by a pair of valid, comparable classifications and dated archive evidence. Obtain shared valid-data coverage, product metadata, rights, acquisition date and processing logs together with the pixels. For settlements, retain the original gazetteer / archival map reference, temporal extent, positional uncertainty, documented impact and media rights. No usable historical settlement dataset has yet been acquired.
+
+## Acquired addition: WRI dam point
+
+Institution: World Resources Institute. Dataset: Global Power Plant Database, facility `WRI1000452` (“Three Gorges Dam”). Pinned repository commit: `7a91cfbb2a4e272597acbc00506d61fc1ec73b3d`. Actual source: https://raw.githubusercontent.com/wri/global-power-plant-database/7a91cfbb2a4e272597acbc00506d61fc1ec73b3d/output_database/global_power_plant_database.csv
+
+Acquired and inspected 2026-11-01. License: **CC BY 4.0** per the pinned repository README (https://github.com/wri/global-power-plant-database/blob/7a91cfbb2a4e272597acbc00506d61fc1ec73b3d/README.md). The README distinguishes the data license from the MIT code license. Output: `public/data/dam.geojson`; raw-source checksum and acquisition record: `dam-provenance.json`. Source coordinate: 111.0032, 30.8235; CRS: WGS84 longitude/latitude. Processing: select one row, preserve coordinates unchanged, remove unrelated attributes. No footprint construction.
+
+The source names China Three Gorges Corporation as the underlying reference; its geolocation-source field is empty. Positional accuracy and coordinate observation date are not established. The source is a facility inventory, not a historic shoreline, inhabited-area map, engineering survey or proof of an exact impoundment milestone. No source population/generation/capacity figures are used in the atlas.
+
+## Additional data audit
+
+- `ne_10m_lakes.geojson` at the same Natural Earth pin was retrieved and inspected. No lake polygon intersected the immediate dam test region (110.5–111.4° E / 30.6–31.2° N), and no feature named Three Gorges/Sanxia was found. It was not substituted for a reservoir-era observation or added to the map.
+- NASA and JRC catalogue retries again returned proxy 403.
+- DLR World Settlement Footprint Evolution candidate: https://download.geoservice.dlr.de/WSF_EVO/ . The directory request returned proxy 403; no product, geometry or license was acquired. Even if later obtained, remotely classified built-up area must not be equated automatically with actual inhabited residential land or individual households.
+- Network draft additions preserve existing hosts and request `science.nasa.gov`, `developers.google.com`, `download.geoservice.dlr.de`. They are not active access grants until the environment configuration is applied. No authentication or historical-source access has been assumed.

@@ -13,7 +13,7 @@ The atlas brings measurement and situated histories into the same frame. It does
 3. **Derived difference**: later water minus earlier water within the same valid-data footprint. This describes a classification change, not sole dam causation, persistence, land ownership or loss of habitat.
 4. **Historical interpretation**: archival evidence linked to a location with a period, impact, source and uncertainty. A modern name does not locate a historical settlement.
 
-The approximate dam vicinity and editorial study window are navigation annotations, not observed or reconstructed geographies. No modelled engineering elevation boundary is currently displayed.
+The WRI inventory dam point is a source-located facility reference with unspecified accuracy; the editorial study window remains a navigation annotation. Neither is an observed or reconstructed water boundary. No modelled engineering elevation boundary is currently displayed.
 
 ## Geography and precision
 
@@ -36,3 +36,9 @@ Source-located means a coordinate occurs in the identified source. Approximate m
 ## Exhibition ethics
 
 An empty research layer is shown as an evidence gap, never as proof that a landscape had no inhabitants. Disabled comparison is a visible research condition. Archive media remains absent until an item has been acquired and its rights established. Synthetic geometries exist only in automated tests; they never enter shipped research data. Before exhibition, re-audit sources and dependencies, add an accurately sourced dam location and inspect at least one evidence-rich detailed area against primary materials.
+
+## Dated residential geography and animation
+
+Each habitation record carries an evidence-backed inclusive validity period and an independent spatial-source citation and method. A town locator indicates the place named by its source, not the extent of residential occupation or individual homes. Residential footprints need their own acquired geometry and evidence of residential use; remotely observed built-up area alone is insufficient. Every layer filters these records at its own selected year. Undated Natural Earth points remain optional, separately labelled context.
+
+The water animation enumerates only available annual observations on the same validated footprint/resolution/classification. It never morphs a bank, fills intermediate years or animates a generic line-width parameter. The selected frame updates the water polygon and dated residential records together. Playback pauses on manual year/layer changes or page backgrounding and stops at the final frame. With fewer than two compatible real frames, playback is unavailable. Synthetic test fixtures verify the mechanism without entering the public research dataset.

@@ -1,0 +1,14 @@
+import {describe,it,expect} from 'vitest';
+import {featureCollection} from '@turf/helpers';
+import {residenceAt,observationSequence,periodYear} from '../src/lib/temporal';
+import {seedArchive,type ArchiveRecord} from '../src/data/catalog';
+import {validateResearch,type Observation} from '../src/lib/research';
+const historical:ArchiveRecord={...seedArchive[1],id:'TEST-ONLY-HOME',category:'settlements',evidence:'documented',residence:{fromYear:1980,toYear:1999,kind:'town-location',sourceUrl:'https://example.org/SYNTHETIC',method:'Synthetic test only'}};
+const observation=(year:number):Observation=>({id:`test-${year}`,year,title:'SYNTHETIC',source:'Test only',sourceUrl:'https://example.org/test',license:'Test only',method:'Synthetic test',dateRange:[`${year}-01-01`,`${year}-12-31`],crs:'OGC:CRS84',resolution:30,classification:'annual-seasonal-and-permanent',coverageId:'sha256:'+'a'.repeat(64),coverageUrl:'/data/test.geojson',dataUrl:'/data/test.geojson',geometry:featureCollection([])});
+describe('dated residential geography and honest water playback',()=>{
+ it('shows an inhabited location only within its documented inclusive period',()=>{expect(residenceAt(historical,1987)).toBe(true);expect(residenceAt(historical,1999)).toBe(true);expect(residenceAt(historical,2021)).toBe(false);expect(residenceAt(historical,1979)).toBe(false);});
+ it('never treats undated or lead coordinates as historic homes',()=>{expect(residenceAt(seedArchive[1],1987)).toBe(false);expect(residenceAt({...historical,evidence:'source-lead'},1987)).toBe(false);expect(residenceAt({...historical,coordinates:undefined},1987)).toBe(false);});
+ it('plays sorted real observation years only, without filling temporal gaps',()=>{const a=observation(1987),b=observation(2006),c=observation(2021);expect(observationSequence([c,a,b],a).map(o=>o.year)).toEqual([1987,2006,2021]);expect(observationSequence([a],a)).toEqual([]);expect(observationSequence([a,{...b,coverageId:'different'}],a)).toEqual([]);expect(observationSequence([a,{...b,resolution:60}],a)).toEqual([]);});
+ it('rejects invalid dated residence claims and missing footprint attribution',()=>{const envelope=(a:ArchiveRecord)=>({version:1,observations:[],archives:[a],terrain:null});expect(()=>validateResearch(envelope(historical))).not.toThrow();expect(()=>validateResearch(envelope({...historical,residence:{...historical.residence!,fromYear:2021,toYear:1980}}))).toThrow('residence');expect(()=>validateResearch(envelope({...historical,residence:{...historical.residence!,kind:'residential-footprint'}}))).toThrow('residence');});
+ it('uses the baseline year for history and the selected year for other layers',()=>{expect(periodYear('before',1987,2021)).toBe(1987);expect(periodYear('settlements',1987,2021)).toBe(2021);expect(periodYear('after',1987,2021)).toBe(2021);});
+});

@@ -10,7 +10,7 @@ This is a functioning atlas with real contextual geography and validated import 
 | Affected historic settlements | Empty independent layer; no fabricated villages | Dated gazetteer/maps/official or scholarly evidence, old location, impact, confidence, source and rights |
 | Relocation destinations / routes | Not drawn | Documented relationship between specific origin and destination; not inferred from modern city labels |
 | Terrain / hillshade | No relief; land stays visible; control explains gap | Licensed regional DEM, horizontal and vertical CRS, source period, units, void treatment, padded coverage |
-| Precise dam location / footprint | Approximate rounded vicinity only, pending source verification | Independently checked geographic source and appropriate positional precision |
+| Surveyed dam footprint | WRI inventory point acquired and source-matched; survey accuracy remains unknown | Engineering survey geometry and positional metadata if a precise footprint is needed |
 | Archival media | None displayed; NASA item remains an unlocated source lead | Acquired original item, credits, permission / reuse terms, date verification and contextual notes |
 | Detailed study area | Reference-place navigation works; high zoom warns about map scale | A strong common evidence set before any detailed submergence claim |
 | Water-level / operational phases | No levels or engineering milestones assigned | Actual dated operating records with elevation reference and citations |
@@ -30,3 +30,9 @@ To continue research, permit the specific official hosts you intend to use in en
 4. Verify seasonal interpretation and explanatory limits before expanding the collection.
 
 At initial implementation, no public deployment, environment publication, repository push or course-step progression was performed. For subsequent website publication and its status, see [DEPLOYMENT.md](DEPLOYMENT.md).
+
+## Current three-layer update
+
+The full-reservoir view, three direct layer buttons, evidence-year water playback mechanism and dated residential-location/footprint support are implemented. The water playback and habitation filtering were exercised using explicitly synthetic browser fixtures only. **There are still zero actual water observations and zero dated residential records in shipped research data.** No artificial widening or made-up towns were introduced.
+
+Official source access is a current external blocker: NASA, the JRC catalogue and DLR WSF Evolution all returned proxy 403. Required additional hosts are saved in the environment draft. Applying those settings allows further investigation; it does not supply actual water masks, historical gazetteers, household evidence, georeferencing or licensing review. Subsequent data acquisition and validation remain required before these data-dependent features can be presented as historical results.

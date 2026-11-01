@@ -38,6 +38,10 @@ export function validateResearch(value:unknown):Research{
  }
  for(const a of r.archives){
   if(!a.id||ids.has(a.id)||!a.title?.en||!a.title?.zh||!a.summary?.en||!a.summary?.zh||!a.notes?.en||!a.notes?.zh||!a.period?.en||!a.period?.zh||!a.impact?.en||!a.impact?.zh||!a.source||!link(a.sourceUrl)||!a.rights||!['geography','settlements','engineering','resettlement','official','ecology'].includes(a.category)||!['source-located','approximate','unlocated'].includes(a.certainty)||!['context','source-lead','documented'].includes(a.evidence)||a.coordinates&&!validCoordinate(a.coordinates)||a.certainty==='unlocated'&&a.coordinates||a.certainty!=='unlocated'&&!a.coordinates||a.coordinates&&a.evidence==='source-lead'||a.category==='settlements'&&a.evidence!=='documented')throw Error(`Invalid archive metadata: ${a.id}`);
+  if(a.residence){
+   const h=a.residence;
+   if(a.evidence!=='documented'||!a.coordinates||!Number.isInteger(h.fromYear)||!Number.isInteger(h.toYear)||h.fromYear>h.toYear||!link(h.sourceUrl)||!h.method||!['town-location','residential-footprint'].includes(h.kind)||h.footprintUrl&&!local(h.footprintUrl)||h.kind==='residential-footprint'&&!h.footprintUrl)throw Error(`Invalid dated residence evidence: ${a.id}`);
+  }
   if(a.media?.some(m=>!['image','video','audio'].includes(m.kind)||!link(m.url)||!m.rights||!m.caption?.en||!m.caption?.zh))throw Error(`Invalid archive media: ${a.id}`);
   ids.add(a.id);
  }
@@ -73,6 +77,10 @@ export async function loadResearch(signal?:AbortSignal):Promise<Research>{
   const coverage=await getCoverage(o);
   if(fc.features.length){const outside=difference(featureCollection([...fc.features,...coverage.features]));if(outside&&area(outside)>1)throw Error('Water extends outside valid-data coverage.');}
   o.geometry=fc;
+ }));
+ await Promise.all(r.archives.filter(a=>a.residence?.footprintUrl).map(async a=>{
+  const res=await fetch(assetUrl(a.residence!.footprintUrl!),{signal});if(!res.ok)throw Error(`Missing residence footprint: ${a.id}`);
+  const fc=await res.json();validateWater(fc);if(!fc.features.length)throw Error(`Empty residence footprint: ${a.id}`);a.residence!.footprint=fc;
  }));return r;
 }
 export function boundsOfCoordinates(coords:Position[]){return coords.reduce((b,c)=>[Math.min(b[0],c[0]),Math.min(b[1],c[1]),Math.max(b[2],c[0]),Math.max(b[3],c[1])],[180,90,-180,-90]);}
