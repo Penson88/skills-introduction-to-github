@@ -1,0 +1,37 @@
+{
+  "name": "submerged-geographies",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0",
+    "build": "npm run data:validate && tsc -b && vite build",
+    "preview": "vite preview --host 0.0.0.0",
+    "test": "vitest run",
+    "test:e2e": "playwright test",
+    "data:fetch": ".venv/bin/python scripts/fetch_context.py",
+    "data:validate": "node --import tsx scripts/validate.ts",
+    "data:validate:gis": ".venv/bin/python scripts/validate_geo.py",
+    "test:gis": ".venv/bin/python -m unittest discover -s tests -p \"test_*.py\" -v"
+  },
+  "dependencies": {
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "maplibre-gl": "^5.12.0",
+    "@turf/area": "^7.3.0",
+    "@turf/difference": "^7.3.0",
+    "@turf/helpers": "^7.3.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "@types/node": "^24.0.0",
+    "@types/geojson": "^7946.0.16",
+    "@vitejs/plugin-react": "^5.1.0",
+    "vite": "^7.2.0",
+    "typescript": "~5.9.3",
+    "vitest": "^4.0.0",
+    "tsx": "^4.20.0",
+    "@playwright/test": "^1.56.0"
+  }
+}
