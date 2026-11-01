@@ -40,3 +40,11 @@ GitHub subsequently triggered its native **pages build and deployment** workflow
 Deployment evidence: https://github.com/Penson88/skills-introduction-to-github/actions/runs/41351581837
 
 No manual Pages activation is pending. The GitHub-reported deployment succeeded. Direct HTTP/browser validation of the public site from this executor remains blocked by the active network policy for `penson88.github.io`; local production-subpath browser checks passed with no failed assets or JavaScript errors. `api.github.com` is also still blocked in the running revision despite the saved allowlist draft. The deployment result was read through GitHub's permitted public workflow HTML, without bypassing the proxy or extracting credentials.
+
+## Full-reservoir layer update: 2026-11-01
+
+Source implementation: `827de99ff9dc7ac53947f505fd97752f863df538`.
+Published website build: `f48751a88862ec725affaf8a65f09ce455937705`.
+GitHub reported **Success** for https://github.com/Penson88/skills-introduction-to-github/actions/runs/41354110508 and linked https://penson88.github.io/skills-introduction-to-github/ .
+
+The release opens at the full-reservoir study window and includes direct layer buttons, dated habitation filtering, source-located WRI dam information and a guarded actual-observation playback mechanism. Production-subpath browser checks passed without failed resources or JavaScript page errors. Current shipped `research.json` still has zero water observations and zero dated habitation records; the animation is therefore disabled on real site data. Synthetic tests do not populate the public map. Source acquisition remains blocked until the saved official-source network configuration is applied.
