@@ -48,3 +48,8 @@ Published website build: `f48751a88862ec725affaf8a65f09ce455937705`.
 GitHub reported **Success** for https://github.com/Penson88/skills-introduction-to-github/actions/runs/41354110508 and linked https://penson88.github.io/skills-introduction-to-github/ .
 
 The release opens at the full-reservoir study window and includes direct layer buttons, dated habitation filtering, source-located WRI dam information and a guarded actual-observation playback mechanism. Production-subpath browser checks passed without failed resources or JavaScript page errors. Current shipped `research.json` still has zero water observations and zero dated habitation records; the animation is therefore disabled on real site data. Synthetic tests do not populate the public map. Source acquisition remains blocked until the saved official-source network configuration is applied.
+
+## Selected local position · 2 November 2026
+
+The user supplied latitude **30.825152**, longitude **110.999284**. Source commit: `6a81ae0`. Static Pages commit: `d5ae105f3cb150f1df6176f5e4b84f2ae984ec70`.
+GitHub Pages confirmed **completed / success**: https://github.com/Penson88/skills-introduction-to-github/actions/runs/41371946414 . The same public site now opens at the user-selected point and restricts navigation to the nearby local area. Header reset and guided views stay local. The production-browser check measured a 0.5-pixel center error before and after reset, without JavaScript errors. The marker is a user-supplied navigation point, not a sourced historic habitation feature or a verified street survey.
