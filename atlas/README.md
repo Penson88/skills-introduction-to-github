@@ -27,7 +27,7 @@ For deployment later, serve `dist/` from an HTTPS static host. The build uses re
 
 - Real, locally served Natural Earth geographic vectors; local Yiling initial view, Yangtze context and nearby references, scale bar, geographic attribution and zoom navigation.
 - Research-window outline (editorial bounding box, **not a reservoir boundary**), three spatial scales and city reference locations.
-- Three independently controlled **research** layers. They are currently empty: the visible river line is undated basemap context, not historical water evidence.
+- Three independently controlled **research** layers. They are currently empty: the visible water areas are an undated HydroLAKES reference inventory, not selected-year observations.
 - Archive index, category filters, clickable source-located reference points, bilingual record panels and optional image / video / audio fields.
 - Chinese / English interface; sources, licensing and methodology dialog; keyboard controls; reduced-motion support; desktop and mobile layouts.
 - Timeline with explicit data availability; choice of earlier / later observation, opacity control, and a functional dual-MapLibre comparison divider that **only enables with compatible imported observations**. Both canvases use the same style and camera; camera changes are copied from the interactive map.
@@ -36,7 +36,7 @@ For deployment later, serve `dist/` from an HTTPS static host. The build uses re
 
 ## Deliberate limits
 
-Read [DATA_GAPS.md](DATA_GAPS.md) before exhibiting the work. No historical or reservoir-era water masks, verified affected settlements, migration routes, archival images, or regional DEM are bundled. Those features are not simulated. The dam marker now preserves the WRI source inventory coordinate (WRI1000452, CC BY 4.0); positional accuracy is unspecified and it is not a surveyed dam footprint. Reference city coordinates are source-checked, but their historical period / social impact is not established. Close zoom does not improve the original map's resolution.
+Read [DATA_GAPS.md](DATA_GAPS.md) before exhibiting the work. No dated historical or annual reservoir-era water masks, verified affected settlements, migration routes, archival images, or regional DEM are bundled. Those features are not simulated. The dam marker now preserves the WRI source inventory coordinate (WRI1000452, CC BY 4.0); positional accuracy is unspecified and it is not a surveyed dam footprint. Reference city coordinates are source-checked, but their historical period / social impact is not established. Close zoom does not improve the original map's resolution.
 
 ## Validate
 

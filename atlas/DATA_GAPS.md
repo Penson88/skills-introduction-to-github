@@ -4,7 +4,7 @@ This is a functioning atlas with real contextual geography and validated import 
 
 | Gap | Current behaviour | Evidence needed to resolve it |
 |---|---|---|
-| Historical river / shoreline | Research layer empty; undated river context explicitly labelled | Georeferenced, dated classification or reconstructable archival geometry, with season, CRS, resolution, method and uncertainty |
+| Historical river / shoreline | Research layer empty; undated waterbody inventory explicitly labelled | Georeferenced, dated classification or reconstructable archival geometry, with season, CRS, resolution, method and uncertainty |
 | Reservoir-era extent | Research layer empty; timeline shows “Data unavailable” | Comparable observed mask with common valid observation footprint |
 | Before / after scientific comparison | Disabled on shipped data; functional mechanism tested only with synthetic test fixtures | Two appropriate, reviewed observations; verify classification, dates, alignment, season and no-data coverage |
 | Affected historic settlements | Empty independent layer; no fabricated villages | Dated gazetteer/maps/official or scholarly evidence, old location, impact, confidence, source and rights |

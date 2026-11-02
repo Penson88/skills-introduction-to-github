@@ -53,3 +53,9 @@ The release opens at the full-reservoir study window and includes direct layer b
 
 The user supplied latitude **30.825152**, longitude **110.999284**. Source commit: `6a81ae0`. Static Pages commit: `d5ae105f3cb150f1df6176f5e4b84f2ae984ec70`.
 GitHub Pages confirmed **completed / success**: https://github.com/Penson88/skills-introduction-to-github/actions/runs/41371946414 . The same public site now opens at the user-selected point and restricts navigation to the nearby local area. Header reset and guided views stay local. The production-browser check measured a 0.5-pixel center error before and after reset, without JavaScript errors. The marker is a user-supplied navigation point, not a sourced historic habitation feature or a verified street survey.
+
+## Actual reference waterbody surfaces · 2 November 2026
+
+Source implementation: `f529d40`. Published Pages build: `86861f3809a75f30d250a38f793dac2301a891d6`.
+GitHub confirmed completed/success: https://github.com/Penson88/skills-introduction-to-github/actions/runs/41373950657 .
+The local map now fills three source-derived HydroLAKES waterbody polygons instead of drawing a river centerline. Water-bank shape is preserved from the original dataset, and the selected coordinate remains the center. Default local zoom is 11.5 to reveal more adjacent water. Real source data, topology and visible water-surface rendering were verified. Inventory dates are mixed and not assigned to the selected research year; actual historical masks and temporal animation remain separate data gaps. Only the local selected GeoJSON/provenance were published; the global archive and original shapefile remain outside the website.
