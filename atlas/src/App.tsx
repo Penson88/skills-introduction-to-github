@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import {observationSequence, periodYear, residenceAt, localBounds, damCoordinates, inLocalArea} from './lib/temporal';
+import {observationSequence, periodYear, residenceAt, selectedLocation, inLocalArea} from './lib/temporal';
 import MapView, { type CameraTarget } from './components/MapView';
 import { categories, layers as layerDefinitions, seedArchive, sources, years, type ArchiveRecord, type Category, type Lang, type LayerId } from './data/catalog';
 import { changedWater, comparable, emptyResearch, loadResearch, type Research } from './lib/research';
@@ -23,7 +23,7 @@ export default function App(){
  const [panel,setPanel]=useState<Panel>('index'),[selected,setSelected]=useState<ArchiveRecord|null>(null),[filter,setFilter]=useState<Category|'all'>('all');
  const [method,setMethod]=useState(false),[notice,setNotice]=useState(''),[mapReady,setMapReady]=useState(false),[zoom,setZoom]=useState(12.5);
  const [guided,setGuided]=useState(false),[step,setStep]=useState(0);
- const [target,setTarget]=useState<CameraTarget>({center:damCoordinates,zoom:12.5,bounds:localBounds,seq:0});
+ const [target,setTarget]=useState<CameraTarget>({center:selectedLocation,zoom:12.5,seq:0});
  const move=(center:[number,number],z:number)=>setTarget(old=>({center,zoom:z,seq:old.seq+1}));
  const records=useMemo(()=>[...seedArchive,...research.archives],[research]);
  const before=research.observations.find(o=>o.year===beforeYear),after=research.observations.find(o=>o.year===year);
@@ -35,7 +35,7 @@ export default function App(){
  const activeDefinition=layerDefinitions.find(l=>l.id===focus)!;
  const focusLayer=(id:LayerId)=>{setFocus(id);setPlaying(false);setCompare(false);setSelected(null);setPanel('index');setLayers({before:id==='before',settlements:id==='settlements',after:id==='after'});};
  const selectYear=(value:number)=>{setPlaying(false);if(focus==='before'&&value<2003)setBeforeYear(value);else {if(focus==='before')focusLayer('after');setYear(value);}};
- const localView=()=>setTarget(old=>({center:damCoordinates,zoom:12.5,bounds:localBounds,seq:old.seq+1}));
+ const localView=()=>setTarget(old=>({center:selectedLocation,zoom:12.5,seq:old.seq+1}));
  useEffect(()=>{if(!playing)return;if(focus!=='settlements'||series.length<2){setPlaying(false);return;}const index=series.findIndex(o=>o.year===year);if(index===series.length-1){setPlaying(false);return;}const timer=window.setTimeout(()=>setYear(series[index+1]?.year??series[0].year),speed);return()=>window.clearTimeout(timer);},[playing,focus,series,year,speed]);
  useEffect(()=>{const pause=()=>{if(document.hidden)setPlaying(false);};document.addEventListener('visibilitychange',pause);return()=>document.removeEventListener('visibilitychange',pause);},[]);
 
@@ -71,7 +71,7 @@ export default function App(){
     {loaded&&<MapView lang={lang} records={records} focus={focus} activeYear={activeYear} contextPlaces={contextPlaces} change={changed?.geometry} research={research} layers={layers} labels={labels} terrain={terrain} before={before} after={after} opacity={opacity} compare={compare} divider={divider} target={target} onSelect={selectRecord} onCamera={setZoom} onReady={()=>setMapReady(true)} onError={setNotice}/>}
     <div className="map-topline"><div className="breadcrumb"><span>{t('HUBEI','湖北')}</span><span>/</span><span>{t('YICHANG','宜昌')}</span><span>/</span><button onClick={localView}>{t('YILING DISTRICT','夷陵区')}</button></div><button className="map-index" onClick={localView}>{t('RESET LOCAL VIEW','重置局部视图')}</button></div>
 
-    {scale>1&&<div className="region-note"><span className="eyebrow">{t('YILING · YICHANG / LOCAL STUDY','宜昌市夷陵区 / 局部研究')}</span><h2>{activeDefinition.subtitle[lang]}</h2><div className="period-stamp">{activeYear} / {t('SELECTED RESEARCH YEAR','所选研究年份')}</div><p>{t('Temporary dam-area focus · exact unnamed-road pin pending','暂以大坝附近定位 · Unnamed Road 具体路段待确认')}</p><label>{t('Research location','研究地点')}<select aria-label={t('Research location','研究地点')} value="" onChange={e=>{const r=records.find(x=>x.id===e.target.value);if(r)selectRecord(r);}}><option value="">{t('Locate a reference place…','定位参照地点…')}</option>{records.filter(r=>r.coordinates&&inLocalArea(r.coordinates)).map(r=><option key={r.id} value={r.id}>{r.title[lang]}</option>)}</select></label></div>}
+    {scale>1&&<div className="region-note"><span className="eyebrow">{t('YILING · YICHANG / LOCAL STUDY','宜昌市夷陵区 / 局部研究')}</span><h2>{activeDefinition.subtitle[lang]}</h2><div className="period-stamp">{activeYear} / {t('SELECTED RESEARCH YEAR','所选研究年份')}</div><p>{t('30.825152° N / 110.999284° E · selected location','北纬30.825152° / 东经110.999284° · 所选位置')}</p><label>{t('Research location','研究地点')}<select aria-label={t('Research location','研究地点')} value="" onChange={e=>{const r=records.find(x=>x.id===e.target.value);if(r)selectRecord(r);}}><option value="">{t('Locate a reference place…','定位参照地点…')}</option>{records.filter(r=>r.coordinates&&inLocalArea(r.coordinates)).map(r=><option key={r.id} value={r.id}>{r.title[lang]}</option>)}</select></label></div>}
     <div className="layer-tabs" role="group" aria-label={t('Choose research layer','切换研究图层')}>{layerDefinitions.map(l=><button key={l.id} aria-pressed={focus===l.id} className={focus===l.id?'active':''} onClick={()=>focusLayer(l.id)}><small>{l.number}</small><span>{l.subtitle[lang]}</span></button>)}</div>
     <div className="north-mark" aria-hidden="true"><span>N</span><i>↑</i><small>WGS 84</small></div>
     <div className="map-bottom-caption"><span className="live-dot"/> {mapReady?t('GEOGRAPHIC CONTEXT LOADED','地理背景已载入'):t('LOADING MAP','正在载入地图')} <span> / {t('NATURAL EARTH','自然地球')}</span></div>

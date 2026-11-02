@@ -40,3 +40,7 @@ GitHub Pages resource-path fixes: 10 unit tests and 3 browser tests passed; prod
 - Production build and repository diff checks passed. WRI coordinate bytes match the pinned CSV extraction. Updated desktop/mobile screenshots are generated under ignored `test-results/`.
 
 The requested real historical inhabitation and changing-water visualisation is **not yet scientifically populated**. No source-confirmed historic water masks or dated residential footprints have been acquired. Implementation readiness and scientific data readiness remain separate.
+
+## Local coordinate focus · 2 November 2026
+
+The user supplied latitude 30.825152 / longitude 110.999284. The map receives longitude first, uses that exact center for initial view and reset, restricts navigation locally, and no longer offers national / whole-reservoir navigation. Three existing browser tests and the production build pass. A production Chromium check additionally measured the selected-location marker at the viewport center (within 2 pixels) before and after a layer switch/reset. The point is user-supplied, separate from WRI's dam record; it is not asserted to be a surveyed road geocode. Source resolution and historical-data availability are unchanged.

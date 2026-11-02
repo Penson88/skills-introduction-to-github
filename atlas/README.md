@@ -25,7 +25,7 @@ For deployment later, serve `dist/` from an HTTPS static host. The build uses re
 
 ## What works now
 
-- Real, locally served Natural Earth geographic vectors; full-reservoir initial view plus China locator, Yangtze and tributaries, scale bar, geographic attribution and zoom navigation.
+- Real, locally served Natural Earth geographic vectors; local Yiling initial view, Yangtze context and nearby references, scale bar, geographic attribution and zoom navigation.
 - Research-window outline (editorial bounding box, **not a reservoir boundary**), three spatial scales and city reference locations.
 - Three independently controlled **research** layers. They are currently empty: the visible river line is undated basemap context, not historical water evidence.
 - Archive index, category filters, clickable source-located reference points, bilingual record panels and optional image / video / audio fields.
@@ -136,7 +136,7 @@ tests/                      unit, raster pipeline and browser tests
 
 ## Three-period reservoir views
 
-The atlas now opens in a **local Yiling / dam-area study window**. The user-supplied “Unnamed Road, 443134” is not a uniquely geocoded road; until a share link or coordinate is supplied, the sourced WRI dam point is a temporary regional anchor. The three prominent map buttons select Before the Dam, Submergence & Displacement, and Engineered Waters. Independent overlay switches remain available under **Overlay visibility**. The wordmark and breadcrumb reset this local view. National and whole-reservoir navigation are no longer offered; min zoom and maximum navigation bounds keep exploration local.
+The atlas now opens in a **local Yiling / dam-area study window**. The user supplied the exact navigation coordinate (30.825152 N, 110.999284 E); it is separate from the sourced dam inventory point. The three prominent map buttons select Before the Dam, Submergence & Displacement, and Engineered Waters. Independent overlay switches remain available under **Overlay visibility**. The wordmark and breadcrumb reset this local view. National and whole-reservoir navigation are no longer offered; min zoom and maximum navigation bounds keep exploration local.
 
 The second view can play **actual imported observation frames only**, with pause, three speeds and automatic stop at the final frame. It requires at least two masks with the same audited coverage, classification and resolution. No temporal interpolation, width pulsing, river-buffer growth or 175 m terrain fill is substituted. With no real masks imported, playback remains disabled and explains the gap. The newly classified-water difference is a separate derived overlay, not a claim of permanent dam-caused inundation.
 
@@ -146,6 +146,6 @@ To reproduce the dam inventory extraction: `python3 scripts/fetch_dam.py`. This 
 
 ## Current geographic scope · 2 November 2026
 
-User request: concentrate on an unnamed road in Yiling District, Yichang, Hubei (postal code 443134), not the whole map. This address does not uniquely identify a road. The map currently uses the already sourced dam inventory point (111.0032, 30.8235) as an **explicitly temporary nearby anchor**, not a claimed road geocode. A map share link or latitude/longitude is required for exact placement.
+User-selected point: **latitude 30.825152, longitude 110.999284**, supplied in chat for the unnamed-road location in Yiling District, Yichang, Hubei (postal code 443134). MapLibre receives `[110.999284, 30.825152]` in longitude/latitude order. These supplied coordinates are the navigation anchor, independent of the separately sourced WRI dam point. They are not an archive feature, historic settlement or surveyed accuracy claim.
 
-Initial window: 110.92–111.09° E / 30.77–30.88° N. Navigation limit: 110.82–111.20° E / 30.67–31.00° N. These are editorial viewport limits, not district boundaries or inundation estimates. Minimum zoom 10.8, maximum zoom 13. Layer switching and guided reading stay in the local view; archive entries outside it remain readable without moving the map outside the area. Basemap data resolution is unchanged and does not support street-level claims.
+The map opens directly at this point at zoom 12.5. The wordmark, district breadcrumb, guided-mode navigation and local reset return to the same point. A separate target ring identifies the user-selected location. Navigation limits (110.809284–111.189284° E / 30.665152–31.005152° N), minimum zoom 10.8 and maximum zoom 13 prevent a return to the national or whole-reservoir view. These are editorial viewport limits, not administrative or water boundaries. Archive records outside the area can be read without moving the map there. Basemap source resolution is unchanged and does not support street-level claims.

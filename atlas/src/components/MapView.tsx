@@ -1,4 +1,4 @@
-import {damCoordinates, residenceAt, localNavigationBounds} from '../lib/temporal';
+import {damCoordinates, residenceAt, localNavigationBounds, selectedLocation} from '../lib/temporal';
 import { assetUrl } from '../lib/assets';
 import { useEffect, useRef, useState } from 'react';
 import maplibregl, { type Map as GLMap, type StyleSpecification, type GeoJSONSource } from 'maplibre-gl';
@@ -65,7 +65,10 @@ export default function MapView(p:Props){
   }
   const dam=p.records.find(a=>a.id==='DAM-001');
   const el=document.createElement('button');el.className='dam-marker';el.setAttribute('aria-label',p.lang==='en'?'Three Gorges Dam, WRI inventory location':'三峡大坝，WRI 数据库定位');el.innerHTML='<span>＋</span><small>'+ (p.lang==='en'?'THREE GORGES DAM<br/>WRI INVENTORY POINT':'三峡大坝<br/>WRI 数据库定位')+'</small>';el.onclick=()=>{if(dam)latest.current.onSelect(dam);};
-  markers.push(new maplibregl.Marker({element:el}).setLngLat(damCoordinates).addTo(m));
+  markers.push(new maplibregl.Marker({element:el,anchor:'left',offset:[-14,0]}).setLngLat(damCoordinates).addTo(m));
+  const location=document.createElement('button');location.className='selected-location-marker';location.setAttribute('aria-label',p.lang==='en'?'Your selected location: 30.825152 N, 110.999284 E':'所选位置：北纬30.825152，东经110.999284');location.title=p.lang==='en'?'User-supplied location':'用户提供的定位点';location.innerHTML='<span></span>';
+  location.onclick=()=>m.flyTo({center:selectedLocation,zoom:12.5,duration:window.matchMedia('(prefers-reduced-motion: reduce)').matches?0:700});
+  markers.push(new maplibregl.Marker({element:location}).setLngLat(selectedLocation).addTo(m));
   const showCities=()=>cityElements.forEach(el=>{el.style.display=m.getZoom()<5?'none':'';});showCities();m.on('zoom',showCities);
   return()=>{m.off('zoom',showCities);markers.forEach(x=>x.remove());};
  },[p.records,p.lang,p.labels,p.layers,p.focus,p.activeYear,p.contextPlaces,ready]);
