@@ -13,6 +13,7 @@ export const periodYear=(layer:LayerId,earlier:number,current:number)=>layer==='
 export const reservoirBounds:[[number,number],[number,number]]=[[106.2,29.2],[111.6,31.5]];
 export const damCoordinates:[number,number]=[111.0032,30.8235];
 // User-supplied latitude/longitude, received 2026-11-02. Renderer order is longitude, latitude.
+export const defaultLocalZoom=11.5;
 export const selectedLocation:[number,number]=[110.999284,30.825152];
 export const localBounds:[[number,number],[number,number]]=[[110.914284,30.770152],[111.084284,30.880152]];
 export const localNavigationBounds:[[number,number],[number,number]]=[[110.809284,30.665152],[111.189284,31.005152]];

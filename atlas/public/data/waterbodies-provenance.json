@@ -1,0 +1,51 @@
+{
+  "dataset": "HydroLAKES v1.0",
+  "authors": "Messager, Lehner, Grill, Nedeva & Schmitt (2016)",
+  "sourceUrl": "https://www.hydrosheds.org/products/hydrolakes",
+  "acquired": "2026-11-02",
+  "downloadUrl": "https://github.com/chartcatalogs/water_bodies/releases/download/2024.4/HydroLAKES_polys_v10_shp.zip",
+  "archiveSha256": "9ef63498569dd7ccd0b8d8852da026e009a75f42d293f00e483f3b9fcfe8e1f9",
+  "crs": "OGC:CRS84 / WGS84 longitude-latitude",
+  "license": "CC BY 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+  "licenseEvidence": "Bundled HydroLAKES_TechDoc_v10.pdf, section 4.1",
+  "reference": "https://doi.org/10.1038/ncomms13603",
+  "scale": "Approx. 1:250,000 regionally; mixed source resolution, generalized shorelines",
+  "dateRange": "Mixed source dates. No per-feature shoreline observation date established. v1.0 published 2016; mirror release 2024.4 is not an observation date.",
+  "processing": "Select entire source polygons intersecting the local navigation window using GDAL; retain original geometry; WGS84 GeoJSON export. No clipping, buffer, manual bank editing or shoreline year assignment.",
+  "features": [
+    {
+      "Hylak_id": 1453,
+      "Lake_name": "Three Gorges Reservoir",
+      "Lake_type": 2,
+      "Grand_id": 5410,
+      "Poly_src": "GRanD",
+      "dataset": "HydroLAKES v1.0",
+      "temporal": "undated inventory context; not a yearly observation",
+      "license": "CC BY 4.0"
+    },
+    {
+      "Hylak_id": 15271,
+      "Lake_name": null,
+      "Lake_type": 2,
+      "Grand_id": 5418,
+      "Poly_src": "GRanD",
+      "dataset": "HydroLAKES v1.0",
+      "temporal": "undated inventory context; not a yearly observation",
+      "license": "CC BY 4.0"
+    },
+    {
+      "Hylak_id": 1377301,
+      "Lake_name": null,
+      "Lake_type": 1,
+      "Grand_id": 0,
+      "Poly_src": "SWBD",
+      "dataset": "HydroLAKES v1.0",
+      "temporal": "undated inventory context; not a yearly observation",
+      "license": "CC BY 4.0"
+    }
+  ],
+  "limitations": "Inventory mapping, not measured current water, historic pre-dam water or a dated operational shoreline. Small islands may be removed by upstream compilation. No area-difference or temporal animation is inferred from this layer.",
+  "sourceShapefileSha256": "bbb5a60b8e3016908991aa0abd76f5553a3d019ae7d2da0866c823f1ddf4dded",
+  "independentIntegrityCheck": "Matches the public Git LFS pointer for the same original HydroLAKES shapefile from waterfolk/Hydrolakes_polygons."
+}

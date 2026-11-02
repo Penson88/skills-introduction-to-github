@@ -59,3 +59,17 @@ test('synthetic test-only imports enable aligned swipe and reject tampered cover
  await page.route('**/data/test-coverage.geojson',r=>r.fulfill({contentType:'application/json',body:coverage+' '}));
  await page.reload();await expect(page.locator('.notice')).toContainText('Coverage checksum mismatch');await expect(page.getByRole('button',{name:'Compare water extents'})).toBeDisabled();
 });
+
+test('real local waterbody polygons render as surfaces and expose provenance',async({page})=>{
+ await page.goto('/');await expect(page.getByText('GEOGRAPHIC CONTEXT LOADED',{exact:false})).toBeVisible();
+ const response=await page.request.get('/data/waterbodies.geojson');expect(response.ok()).toBe(true);const bodies=await response.json();expect(bodies.features).toHaveLength(3);expect(bodies.features.some((f:{properties:{Hylak_id:number}})=>f.properties.Hylak_id===1453)).toBe(true);
+ const screenshot=await page.locator('.map-canvas').screenshot();
+ const waterFraction=await page.evaluate(async base64=>{
+  const img=new Image();img.src='data:image/png;base64,'+base64;await img.decode();const canvas=document.createElement('canvas');canvas.width=img.width;canvas.height=img.height;const ctx=canvas.getContext('2d')!;ctx.drawImage(img,0,0);const data=ctx.getImageData(0,0,img.width,img.height).data;let water=0;
+  for(let i=0;i<data.length;i+=4){const [r,g,b]=[data[i],data[i+1],data[i+2]];if(r>110&&r<185&&g-r>12&&g-b>=0&&g-b<16&&b>130&&b<195)water++;}
+  return water/(img.width*img.height);
+ },screenshot.toString('base64'));
+ // A thin centerline cannot satisfy this visible surface-area assertion.
+ expect(waterFraction).toBeGreaterThan(0.05);
+ await page.getByRole('button',{name:'Waterbody reference',exact:false}).click();await expect(page.getByRole('heading',{name:'Mapped water bodies · HydroLAKES'})).toBeVisible();await expect(page.getByText('Area dataset · see mapped polygons')).toBeVisible();
+});

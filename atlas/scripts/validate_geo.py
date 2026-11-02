@@ -4,7 +4,7 @@ from pathlib import Path
 from shapely.geometry import shape
 ROOT=Path(__file__).resolve().parents[1]/'public'
 r=json.loads((ROOT/'data/research.json').read_text())
-for name in ['countries','rivers','places','dam']:
+for name in ['countries','rivers','places','dam','waterbodies']:
  fc=json.loads((ROOT/f'data/{name}.geojson').read_text())
  for f in fc['features']:
   g=shape(f['geometry'])

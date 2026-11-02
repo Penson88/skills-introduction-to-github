@@ -62,3 +62,21 @@ The source names China Three Gorges Corporation as the underlying reference; its
 - NASA and JRC catalogue retries again returned proxy 403.
 - DLR World Settlement Footprint Evolution candidate: https://download.geoservice.dlr.de/WSF_EVO/ . The directory request returned proxy 403; no product, geometry or license was acquired. Even if later obtained, remotely classified built-up area must not be equated automatically with actual inhabited residential land or individual households.
 - Network draft additions preserve existing hosts and request `science.nasa.gov`, `developers.google.com`, `download.geoservice.dlr.de`. They are not active access grants until the environment configuration is applied. No authentication or historical-source access has been assumed.
+
+## Acquired addition: actual waterbody polygons (2 November 2026)
+
+**HydroLAKES v1.0** (Messager, Lehner, Grill, Nedeva & Schmitt, 2016), CC BY 4.0. Original project: https://www.hydrosheds.org/products/hydrolakes . Citation: https://doi.org/10.1038/ncomms13603 . The bundled technical documentation (section 4.1, inspected from the archive) explicitly confirms this license. Only three selected polygons are redistributed as derived GeoJSON, not the full original database.
+
+Acquired archive: https://github.com/chartcatalogs/water_bodies/releases/download/2024.4/HydroLAKES_polys_v10_shp.zip . SHA-256: `9ef63498569dd7ccd0b8d8852da026e009a75f42d293f00e483f3b9fcfe8e1f9`. The 2024.4 mirror release is **not** the observation date. The earlier waterfolk mirror uses Git LFS; its batch request was denied by integration permissions and its public media endpoint by the network policy. Neither was bypassed. A separately published, publicly accessible archive was then acquired normally through GitHub Releases with TLS intact.
+
+Processing: `scripts/extract_context_water.py` checks the acquired archive fingerprint, safely extracts only known shapefile components and uses GDAL spatial filtering to select entire source polygons intersecting the local navigation window. It writes WGS84 / OGC:CRS84 GeoJSON and provenance. No clipping, buffer, line widening, invented contours, hand edits or year assignment. Source geometry validity and geographic intersection were checked with Shapely; coordinates match the source projection. Regional reference scale is approximately 1:250,000 according to the technical document; local shoreline accuracy is not asserted.
+
+| Hylak_id | Source label | Type | GRanD ID | Geometry check |
+|---|---|---|---|---|
+| 1453 | Three Gorges Reservoir | Reservoir | 5410 | Valid polygon; intersects local view and contains WRI dam locator |
+| 15271 | Unnamed in source; downstream reservoir | Reservoir | 5418 | Valid polygon; intersects local view |
+| 1377301 | Unnamed in source; smaller water body | Lake classification | 0 | Valid polygon; intersects navigation window |
+
+The polygons retain source `Poly_src` lineage. Their shorelines come from mixed original material: HydroLAKES documentation identifies SWBD, GRanD and other sources, with post-2000 reservoirs sometimes supplied by GRanD. No single observation date has been established for these three features. These inventory polygons are displayed only as **undated spatial context**, never as a 1987/2021 observation. They automatically hide if selected dated masks are available or before/after comparison is active. No temporal animation or water-difference estimate is derived from this inventory.
+
+Additional candidate: the MIT-licensed `PaulWangww/TGR_chla_Inversion` study water mask was downloaded and inspected (23 tributary polygons). It does not provide the main waterbody at the selected point, so it was not substituted for the Yangtze reservoir outline and is not included in the map.

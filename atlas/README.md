@@ -148,4 +148,20 @@ To reproduce the dam inventory extraction: `python3 scripts/fetch_dam.py`. This 
 
 User-selected point: **latitude 30.825152, longitude 110.999284**, supplied in chat for the unnamed-road location in Yiling District, Yichang, Hubei (postal code 443134). MapLibre receives `[110.999284, 30.825152]` in longitude/latitude order. These supplied coordinates are the navigation anchor, independent of the separately sourced WRI dam point. They are not an archive feature, historic settlement or surveyed accuracy claim.
 
-The map opens directly at this point at zoom 12.5. The wordmark, district breadcrumb, guided-mode navigation and local reset return to the same point. A separate target ring identifies the user-selected location. Navigation limits (110.809284–111.189284° E / 30.665152–31.005152° N), minimum zoom 10.8 and maximum zoom 13 prevent a return to the national or whole-reservoir view. These are editorial viewport limits, not administrative or water boundaries. Archive records outside the area can be read without moving the map there. Basemap source resolution is unchanged and does not support street-level claims.
+The map opens directly at this point at zoom 11.5, widened locally to reveal more surrounding water. The wordmark, district breadcrumb, guided-mode navigation and local reset return to the same point. A separate target ring identifies the user-selected location. Navigation limits (110.809284–111.189284° E / 30.665152–31.005152° N), minimum zoom 10.8 and maximum zoom 13 prevent a return to the national or whole-reservoir view. These are editorial viewport limits, not administrative or water boundaries. Archive records outside the area can be read without moving the map there. Basemap source resolution is unchanged and does not support street-level claims.
+
+## Water surface areas, not centerlines
+
+The local reference map now renders the actual HydroLAKES v1.0 reservoir/lake polygons in muted blue-green, with bank outlines. Three original source polygons intersect the navigation window; one is explicitly named Three Gorges Reservoir (Hylak_id 1453). The previous generalised Natural Earth river line is removed from the local renderer. Click a water polygon or its reference badge to open its archive/source notes.
+
+These are undated inventory geometries, at approximately 1:250,000 regional scale. They are **not** claimed to be present-day measured water or the selected historical year's shoreline. A prominent reference badge and archive notes explain this; they hide automatically when an actual selected dated water layer or the comparison renderer is shown. Map center remains `[110.999284, 30.825152]` and navigation remains local. No external tile provider or new runtime network dependency is required.
+
+Reproduce the extraction after downloading the archive cited in `DATA_SOURCES.md`:
+
+```sh
+.venv/bin/python scripts/extract_context_water.py /path/to/HydroLAKES_polys_v10_shp.zip
+npm run data:validate
+npm run data:validate:gis
+```
+
+The extractor verifies the known archive SHA-256, selects entire source polygons (no synthetic river buffers), exports WGS84 GeoJSON and saves `waterbodies-provenance.json`. Do not copy the full 782 MB archive into `public/`. Only the selected approximately 30 KB GeoJSON is served. Dated before/after observations and old residential evidence remain separate unfinished research inputs.

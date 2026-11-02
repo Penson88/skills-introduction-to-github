@@ -23,7 +23,7 @@ const record=seedArchive.find(a=>a.id==='DAM-001')!;
 if(JSON.stringify(dam.features[0].geometry.coordinates)!==JSON.stringify(record.coordinates))throw Error('WRI dam source mismatch');
 for(const a of r.archives)if(a.residence?.footprintUrl)validateWater(JSON.parse(readFileSync(join(root,a.residence.footprintUrl),'utf8')));
 function walk(c:unknown){if(!Array.isArray(c))throw Error('Invalid coordinate nesting.');if(typeof c[0]==='number'){if(!validCoordinate(c))throw Error('Invalid context coordinates.');}else c.forEach(walk);}
-for(const name of ['countries','rivers','places','dam']){
+for(const name of ['countries','rivers','places','dam','waterbodies']){
  const fc=JSON.parse(readFileSync(join(root,`data/${name}.geojson`),'utf8'));if(fc.type!=='FeatureCollection'||!fc.features.length)throw Error('Empty context.');
  for(const f of fc.features)walk(f.geometry.coordinates);
  console.log(`${name}: ${fc.features.length} features, coordinates checked`);

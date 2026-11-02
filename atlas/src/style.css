@@ -48,3 +48,7 @@
 .precision-note{left:auto;right:30px;bottom:120px;max-width:220px}.map-bottom-caption{left:155px;bottom:28px;font-size:6px;letter-spacing:.4px}
 @media(max-width:480px){.precision-note{right:18px;bottom:140px;max-width:200px}.map-bottom-caption{left:135px;font-size:5px;max-width:175px}.map-bottom-caption>span:last-child{display:none}}
 .selected-location-marker{width:32px;height:32px;padding:0;border:1px solid #294d47;border-radius:50%;background:#f4efdf99;box-shadow:0 0 0 5px #f4efdf55;cursor:pointer}.selected-location-marker>span{display:block;width:7px;height:7px;border-radius:50%;background:#294d47;margin:auto}
+.water-inventory-note{position:absolute;left:30px;top:129px;z-index:3;padding:4px 8px;background:#f4efdfed;border-left:2px solid #608b81;font-size:8px;line-height:1.5;text-align:left;max-width:calc(100% - 110px)}.inventory-patch{background:#91aaa5!important;border:1px solid #5d857c}
+@media(max-width:480px){.water-inventory-note{top:143px;left:18px;max-width:calc(100% - 70px);font-size:7px;padding:3px 6px}}
+.water-inventory-note{font-size:9px;border-left-width:3px;background:#edf0e6f0;color:#294d47}.precision-note{right:60px;max-width:230px}
+@media(max-width:480px){.water-inventory-note{font-size:8px;line-height:1.4}.precision-note{right:58px;max-width:190px}}

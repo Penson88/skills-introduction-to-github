@@ -36,3 +36,7 @@ At initial implementation, no public deployment, environment publication, reposi
 The full-reservoir view, three direct layer buttons, evidence-year water playback mechanism and dated residential-location/footprint support are implemented. The water playback and habitation filtering were exercised using explicitly synthetic browser fixtures only. **There are still zero actual water observations and zero dated residential records in shipped research data.** No artificial widening or made-up towns were introduced.
 
 Official source access is a current external blocker: NASA, the JRC catalogue and DLR WSF Evolution all returned proxy 403. Required additional hosts are saved in the environment draft. Applying those settings allows further investigation; it does not supply actual water masks, historical gazetteers, household evidence, georeferencing or licensing review. Subsequent data acquisition and validation remain required before these data-dependent features can be presented as historical results.
+
+## Water areas now present (2 November 2026)
+
+Three real HydroLAKES v1.0 waterbody polygons have now been acquired, geographically checked and added as local **inventory context**. The map no longer uses a river centerline to stand in for a water surface. This resolves the lack of visible water areas; it does not resolve the missing historical observation sequence. There are still zero dated water masks in `research.json`, and historical playback remains unavailable. No inventory polygon is assigned to the selected research year.

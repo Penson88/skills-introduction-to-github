@@ -44,3 +44,11 @@ The requested real historical inhabitation and changing-water visualisation is *
 ## Local coordinate focus · 2 November 2026
 
 The user supplied latitude 30.825152 / longitude 110.999284. The map receives longitude first, uses that exact center for initial view and reset, restricts navigation locally, and no longer offers national / whole-reservoir navigation. Three existing browser tests and the production build pass. A production Chromium check additionally measured the selected-location marker at the viewport center (within 2 pixels) before and after a layer switch/reset. The point is user-supplied, separate from WRI's dam record; it is not asserted to be a surveyed road geocode. Source resolution and historical-data availability are unchanged.
+
+## Actual waterbody surface update · 2 November 2026
+
+HydroLAKES v1.0 was actually acquired via a public GitHub Release, CRC-read and SHA-256 fingerprinted. The extracted original shapefile SHA-256 independently matches the waterfolk Git LFS pointer (`bbb5a60b8e3016908991aa0abd76f5553a3d019ae7d2da0866c823f1ddf4dded`). Its included technical documentation confirms CC BY 4.0 and WGS84. Three intersecting original polygons were selected with GDAL, including named Three Gorges Reservoir, and Shapely checked validity and geographic overlap. No synthetic buffering or year assignment was applied.
+
+The production build, 15 unit tests, all 3 existing browser tests and 1 additional real-water browser test passed. The new browser test fetches the actual three-feature GeoJSON, checks the Three Gorges ID, measures rendered blue-green surface pixels (>5% of the map, which a centerline cannot satisfy), and opens the inventory provenance archive. Existing synthetic observation tests confirm this inventory is hidden during dated comparison. GIS audits pass for the new polygons as well as existing context data.
+
+The map remains centered on the user's coordinates and widens its local initial zoom to 11.5 to reveal adjacent water. Source shoreline generalization and mixed dates remain explicitly disclosed; no annual water observations or historic residential features were added by this update.
