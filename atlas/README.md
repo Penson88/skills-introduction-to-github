@@ -136,10 +136,16 @@ tests/                      unit, raster pipeline and browser tests
 
 ## Three-period reservoir views
 
-The atlas now opens on the **whole reservoir research window** (106.2–111.6° E, 29.2–31.5° N; a navigation rectangle, not the actual inundation boundary). The three prominent map buttons select Before the Dam, Submergence & Displacement, and Engineered Waters. Independent overlay switches remain available under **Overlay visibility**. The China overview is accessible through the wordmark / breadcrumb.
+The atlas now opens in a **local Yiling / dam-area study window**. The user-supplied “Unnamed Road, 443134” is not a uniquely geocoded road; until a share link or coordinate is supplied, the sourced WRI dam point is a temporary regional anchor. The three prominent map buttons select Before the Dam, Submergence & Displacement, and Engineered Waters. Independent overlay switches remain available under **Overlay visibility**. The wordmark and breadcrumb reset this local view. National and whole-reservoir navigation are no longer offered; min zoom and maximum navigation bounds keep exploration local.
 
 The second view can play **actual imported observation frames only**, with pause, three speeds and automatic stop at the final frame. It requires at least two masks with the same audited coverage, classification and resolution. No temporal interpolation, width pulsing, river-buffer growth or 175 m terrain fill is substituted. With no real masks imported, playback remains disabled and explains the gap. The newly classified-water difference is a separate derived overlay, not a claim of permanent dam-caused inundation.
 
 **Where did people live?** is filtered by a documented habitation period, independently of the undated reference city dataset. Old city names are hidden from historical maps unless the reader explicitly enables undated reference places. See [RESIDENTIAL_DATA.md](RESIDENTIAL_DATA.md) for the record schema, footprint requirements and limitations. No dated habitation data is currently bundled; a zero-record status describes missing evidence, not an uninhabited landscape.
 
 To reproduce the dam inventory extraction: `python3 scripts/fetch_dam.py`. This downloads the pinned WRI CSV, selects only WRI1000452 and writes `dam.geojson` plus original-byte SHA-256 provenance. Attribution is visible on the map and in the source inventory. No facilities commissioning field is reused as a dated water observation.
+
+## Current geographic scope · 2 November 2026
+
+User request: concentrate on an unnamed road in Yiling District, Yichang, Hubei (postal code 443134), not the whole map. This address does not uniquely identify a road. The map currently uses the already sourced dam inventory point (111.0032, 30.8235) as an **explicitly temporary nearby anchor**, not a claimed road geocode. A map share link or latitude/longitude is required for exact placement.
+
+Initial window: 110.92–111.09° E / 30.77–30.88° N. Navigation limit: 110.82–111.20° E / 30.67–31.00° N. These are editorial viewport limits, not district boundaries or inundation estimates. Minimum zoom 10.8, maximum zoom 13. Layer switching and guided reading stay in the local view; archive entries outside it remain readable without moving the map outside the area. Basemap data resolution is unchanged and does not support street-level claims.

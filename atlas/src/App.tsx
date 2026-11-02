@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import {observationSequence, periodYear, residenceAt, reservoirBounds} from './lib/temporal';
+import {observationSequence, periodYear, residenceAt, localBounds, damCoordinates, inLocalArea} from './lib/temporal';
 import MapView, { type CameraTarget } from './components/MapView';
 import { categories, layers as layerDefinitions, seedArchive, sources, years, type ArchiveRecord, type Category, type Lang, type LayerId } from './data/catalog';
 import { changedWater, comparable, emptyResearch, loadResearch, type Research } from './lib/research';
@@ -21,9 +21,9 @@ export default function App(){
  const [labels,setLabels]=useState(true),[terrain,setTerrain]=useState(true),[opacity,setOpacity]=useState(0.65),[compare,setCompare]=useState(false),[divider,setDivider]=useState(50);
  const [beforeYear,setBeforeYear]=useState(1987),[year,setYear]=useState(2021);
  const [panel,setPanel]=useState<Panel>('index'),[selected,setSelected]=useState<ArchiveRecord|null>(null),[filter,setFilter]=useState<Category|'all'>('all');
- const [method,setMethod]=useState(false),[notice,setNotice]=useState(''),[mapReady,setMapReady]=useState(false),[zoom,setZoom]=useState(6.5);
+ const [method,setMethod]=useState(false),[notice,setNotice]=useState(''),[mapReady,setMapReady]=useState(false),[zoom,setZoom]=useState(12.5);
  const [guided,setGuided]=useState(false),[step,setStep]=useState(0);
- const [target,setTarget]=useState<CameraTarget>({center:[109,30.5],zoom:6.5,bounds:reservoirBounds,seq:0});
+ const [target,setTarget]=useState<CameraTarget>({center:damCoordinates,zoom:12.5,bounds:localBounds,seq:0});
  const move=(center:[number,number],z:number)=>setTarget(old=>({center,zoom:z,seq:old.seq+1}));
  const records=useMemo(()=>[...seedArchive,...research.archives],[research]);
  const before=research.observations.find(o=>o.year===beforeYear),after=research.observations.find(o=>o.year===year);
@@ -35,14 +35,14 @@ export default function App(){
  const activeDefinition=layerDefinitions.find(l=>l.id===focus)!;
  const focusLayer=(id:LayerId)=>{setFocus(id);setPlaying(false);setCompare(false);setSelected(null);setPanel('index');setLayers({before:id==='before',settlements:id==='settlements',after:id==='after'});};
  const selectYear=(value:number)=>{setPlaying(false);if(focus==='before'&&value<2003)setBeforeYear(value);else {if(focus==='before')focusLayer('after');setYear(value);}};
- const reservoirView=()=>setTarget(old=>({center:[109,30.5],zoom:6.5,bounds:reservoirBounds,seq:old.seq+1}));
+ const localView=()=>setTarget(old=>({center:damCoordinates,zoom:12.5,bounds:localBounds,seq:old.seq+1}));
  useEffect(()=>{if(!playing)return;if(focus!=='settlements'||series.length<2){setPlaying(false);return;}const index=series.findIndex(o=>o.year===year);if(index===series.length-1){setPlaying(false);return;}const timer=window.setTimeout(()=>setYear(series[index+1]?.year??series[0].year),speed);return()=>window.clearTimeout(timer);},[playing,focus,series,year,speed]);
  useEffect(()=>{const pause=()=>{if(document.hidden)setPlaying(false);};document.addEventListener('visibilitychange',pause);return()=>document.removeEventListener('visibilitychange',pause);},[]);
 
  const changed=useMemo(()=>{if(!before||!after||!canCompare)return null;try{return changedWater(before,after);}catch{return null;}},[before,after,canCompare]);
  const selectedYears=[...new Set([...years,...research.observations.map(o=>o.year)])].sort((a,b)=>a-b);
  const scale=zoom<5?1:zoom<8?2:3;
- const selectRecord=(r:ArchiveRecord)=>{setSelected(r);setPanel('archive');if(r.coordinates)move(r.coordinates,8.2);};
+ const selectRecord=(r:ArchiveRecord)=>{setSelected(r);setPanel('archive');if(r.coordinates&&inLocalArea(r.coordinates))move(r.coordinates,12.5);};
  useEffect(()=>{const controller=new AbortController();loadResearch(controller.signal).then(r=>{setResearch(r);setLoaded(true);}).catch(e=>{if(e.name!=='AbortError'){setDataError(e.message);setLoaded(true);}});return()=>controller.abort();},[]);
  useEffect(()=>{document.documentElement.lang=lang==='zh'?'zh-CN':'en';},[lang]);
  useEffect(()=>{if(!canCompare)setCompare(false);},[canCompare]);
@@ -50,10 +50,10 @@ export default function App(){
  function toggle(id:LayerId){setPlaying(false);setLayers(v=>({...v,[id]:!v[id]}));}
  function advance(next:number){
   setStep(next);
-  if(next===0)move([107,33],3.5);
-  if(next===1)reservoirView();
-  if(next===2){focusLayer('before');setBeforeYear(1987);move([110.2,30.95],8);}
-  if(next===3){focusLayer('settlements');move([109.516664,31.050442],8);}
+  if(next===0)localView();
+  if(next===1)localView();
+  if(next===2){focusLayer('before');setBeforeYear(1987);localView();}
+  if(next===3){focusLayer('settlements');localView();}
   if(next===4){focusLayer('after');setYear(2021);}
   if(next===5){setPanel('archive');setSelected(null);}
  }
@@ -61,7 +61,7 @@ export default function App(){
  return <div className="atlas-app">
   <a href="#research-panel" className="skip-link">{t('Skip to research','跳至研究面板')}</a>
   <header className="masthead">
-   <button className="wordmark" onClick={()=>{move([107,33],3.5);setStep(0);}} aria-label={t('Return to China overview','返回中国概览')}><span className="brand-symbol">≋</span><span>SUBMERGED<br/>GEOGRAPHIES</span></button>
+   <button className="wordmark" onClick={()=>{localView();setStep(0);}} aria-label={t('Return to Yiling local view','返回夷陵区局部视图')}><span className="brand-symbol">≋</span><span>SUBMERGED<br/>GEOGRAPHIES</span></button>
    <div className="publication"><span>{t('An Interactive Counter-Map of the Three Gorges','三峡互动反制图地图集')}</span><small>长江三峡 / {t('RESEARCH ATLAS','研究地图集')}</small></div>
    <nav aria-label={t('Main navigation','主导航')}><button className={panel==='index'?'active':''} onClick={()=>{setPanel('index');setSelected(null);}}>{t('Atlas','地图集')}</button><button className={panel==='archive'?'active':''} onClick={()=>{setPanel('archive');setSelected(null);}}>{t('Archive','档案')} <sup>{String(records.length).padStart(2,'0')}</sup></button><button onClick={()=>setMethod(true)}>{t('Method & sources','方法与来源')} <span>↗</span></button></nav>
    <button className="language" onClick={()=>setLang(v=>v==='en'?'zh':'en')} aria-label={t('Switch to Chinese','切换为英文')}>{lang==='en'?<><b>EN</b><span>/</span>中文</>:<>EN<span>/</span><b>中文</b></>}</button>
@@ -69,9 +69,9 @@ export default function App(){
   <main className="atlas-main">
    <section className={`map-stage ${scale===1?'overview':''}`} aria-label={t('Interactive geographic atlas','互动地理地图集')}>
     {loaded&&<MapView lang={lang} records={records} focus={focus} activeYear={activeYear} contextPlaces={contextPlaces} change={changed?.geometry} research={research} layers={layers} labels={labels} terrain={terrain} before={before} after={after} opacity={opacity} compare={compare} divider={divider} target={target} onSelect={selectRecord} onCamera={setZoom} onReady={()=>setMapReady(true)} onError={setNotice}/>}
-    <div className="map-topline"><div className="breadcrumb"><button onClick={()=>move([107,33],3.5)}>{t('CHINA','中国')}</button><span>/</span><button onClick={reservoirView}>{t('YANGTZE','长江')}</button>{scale>1&&<><span>/</span><b>{t('THREE GORGES','三峡')}</b></>}</div><span className="map-index">{t('SCALE','尺度')} 0{scale} / 03</span></div>
-    {scale===1&&<div className="map-intro"><div className="eyebrow"><span className="small-line"/>{t('A COUNTER-MAPPING ATLAS','一部反制图地图集')}</div><h1>{t('The river,','河流，')}<br/><em>{t('reconsidered.','重新阅读。')}</em></h1><p>{t('One infrastructure. Many geographies.','一座基础设施，多重地理。')}<br/>{t('Read the Yangtze beyond its engineered boundaries.','在线条之外，阅读长江。')}</p><button className="enter-button" onClick={()=>{reservoirView();if(guided)setStep(1);}}>{t('ENTER THE THREE GORGES','进入三峡')}<span>↗</span></button><small>{t('WRI dam locator · 30.8235° N / 111.0032° E','WRI 坝址记录 · 北纬30.8235° / 东经111.0032°')}</small></div>}
-    {scale>1&&<div className="region-note"><span className="eyebrow">{t('THE FULL RESERVOIR STUDY WINDOW','整个三峡库区研究视窗')}</span><h2>{activeDefinition.subtitle[lang]}</h2><div className="period-stamp">{activeYear} / {t('SELECTED RESEARCH YEAR','所选研究年份')}</div><p>{t('Context linework · not a dated water boundary','地理背景线条 · 非特定日期的水域边界')}</p><label>{t('Research location','研究地点')}<select aria-label={t('Research location','研究地点')} value="" onChange={e=>{const r=records.find(x=>x.id===e.target.value);if(r)selectRecord(r);}}><option value="">{t('Locate a reference place…','定位参照地点…')}</option>{records.filter(r=>r.coordinates).map(r=><option key={r.id} value={r.id}>{r.title[lang]}</option>)}</select></label></div>}
+    <div className="map-topline"><div className="breadcrumb"><span>{t('HUBEI','湖北')}</span><span>/</span><span>{t('YICHANG','宜昌')}</span><span>/</span><button onClick={localView}>{t('YILING DISTRICT','夷陵区')}</button></div><button className="map-index" onClick={localView}>{t('RESET LOCAL VIEW','重置局部视图')}</button></div>
+
+    {scale>1&&<div className="region-note"><span className="eyebrow">{t('YILING · YICHANG / LOCAL STUDY','宜昌市夷陵区 / 局部研究')}</span><h2>{activeDefinition.subtitle[lang]}</h2><div className="period-stamp">{activeYear} / {t('SELECTED RESEARCH YEAR','所选研究年份')}</div><p>{t('Temporary dam-area focus · exact unnamed-road pin pending','暂以大坝附近定位 · Unnamed Road 具体路段待确认')}</p><label>{t('Research location','研究地点')}<select aria-label={t('Research location','研究地点')} value="" onChange={e=>{const r=records.find(x=>x.id===e.target.value);if(r)selectRecord(r);}}><option value="">{t('Locate a reference place…','定位参照地点…')}</option>{records.filter(r=>r.coordinates&&inLocalArea(r.coordinates)).map(r=><option key={r.id} value={r.id}>{r.title[lang]}</option>)}</select></label></div>}
     <div className="layer-tabs" role="group" aria-label={t('Choose research layer','切换研究图层')}>{layerDefinitions.map(l=><button key={l.id} aria-pressed={focus===l.id} className={focus===l.id?'active':''} onClick={()=>focusLayer(l.id)}><small>{l.number}</small><span>{l.subtitle[lang]}</span></button>)}</div>
     <div className="north-mark" aria-hidden="true"><span>N</span><i>↑</i><small>WGS 84</small></div>
     <div className="map-bottom-caption"><span className="live-dot"/> {mapReady?t('GEOGRAPHIC CONTEXT LOADED','地理背景已载入'):t('LOADING MAP','正在载入地图')} <span> / {t('NATURAL EARTH','自然地球')}</span></div>
@@ -87,7 +87,7 @@ export default function App(){
     <div className="panel-heading"><span className="eyebrow">{panel==='archive'?t('THE OPEN ARCHIVE','开放档案'):t('FIELD NOTES / 三峡','田野笔记 / THREE GORGES')}</span><span>↘</span></div>
     {panel==='index'?<>
      {scale===1?<>     <section className="opening-note"><div className="section-number">01 — 06</div><h2>{t('What does a','一条岸线')}{' '}<br/>{t('shoreline','遗漏了')}{' '}<br/><em>{t('leave out?','什么？')}</em></h2><p>{t('A reservoir is a measured body of water. It is also a landscape of memories, movements and absences.','水库是可测量的水体，也是一片由记忆、迁移和缺席构成的土地。')}</p><p className="secondary-copy">{t('This atlas reads the Three Gorges through three overlapping geographies. Every boundary is situated. Every absence is recorded.','本地图集通过三种叠合的地理阅读三峡。每条边界均有语境，每处缺失均被记录。')}</p><button className="text-link" onClick={()=>setMethod(true)}>{t('Read the research position','阅读研究立场')} <span>↗</span></button></section>
-</>:<section className="phase-note"><div className="section-number">LAYER {activeDefinition.number} / {activeYear}</div><h2>{activeDefinition.title[lang]}</h2><p>{focus==='before'?t('Earlier river observations and dated town locations.','较早时期的河流观测与有年代证据的城镇位置。'):focus==='settlements'?t('Observed water changes alongside places inhabited in the selected year.','将观测到的水域变化与所选年份的居住地共同阅读。'):t('Later water observations and dated residential geography.','较晚时期的水域观测与有年代证据的居住地理。')}</p><button className="text-link" onClick={()=>setMethod(true)}>{t('Evidence & methodology','证据与方法')} ↗</button></section>}
+</>:<section className="phase-note"><div className="section-number">LAYER {activeDefinition.number} / {activeYear}</div><h2>{activeDefinition.title[lang]}</h2><p>{focus==='before'?t('Earlier river observations and dated town locations.','较早时期的河流观测与有年代证据的城镇位置。'):focus==='settlements'?t('Observed water changes alongside places inhabited in the selected year.','将观测到的水域变化与所选年份的居住地共同阅读。'):t('Later water observations and dated residential geography.','较晚时期的水域观测与有年代证据的居住地理。')}</p><button className="text-link" onClick={()=>setMethod(true)}>{t('Evidence & methodology','证据与方法')} <span aria-hidden="true">↗</span></button></section>}
      <details className="layer-options"><summary>{t('Overlay visibility','叠加图层可见性')}</summary>     <section className="layer-section"><div className="section-label">{t('READING THE LANDSCAPE','阅读地景')}<span>{t('LAYERS','图层')}</span></div>{layerDefinitions.map(l=>{const count=l.id==='before'?research.observations.filter(o=>o.year===beforeYear).length:l.id==='after'?research.observations.filter(o=>o.year===year).length:datedHomes.length+(after?1:0);return <div className={`layer-row ${!layers[l.id]?'off':''}`} key={l.id}><span className={`layer-number ${l.color}`}>{l.number}</span><div><small>{l.subtitle[lang]}</small><h3>{l.title[lang]}</h3><span className="layer-state">{count?t('Evidence available','有可用证据'):t('No geographic evidence imported','未导入地理证据')}</span></div><button className={`toggle ${layers[l.id]?'on':''}`} role="switch" aria-checked={layers[l.id]} aria-label={l.title[lang]} onClick={()=>toggle(l.id)}><span/></button></div>;})}
      <div className="evidence-note"><span>↳</span><p>{t('Visible river lines are geographic context. They do not represent a historic shoreline.','可见河流线条仅为地理背景，不代表历史岸线。')}</p></div></section>
 </details>

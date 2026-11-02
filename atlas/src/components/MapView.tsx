@@ -1,4 +1,4 @@
-import {damCoordinates, residenceAt} from '../lib/temporal';
+import {damCoordinates, residenceAt, localNavigationBounds} from '../lib/temporal';
 import { assetUrl } from '../lib/assets';
 import { useEffect, useRef, useState } from 'react';
 import maplibregl, { type Map as GLMap, type StyleSpecification, type GeoJSONSource } from 'maplibre-gl';
@@ -9,7 +9,7 @@ export interface CameraTarget {center:[number,number];zoom:number;bounds?:[[numb
 interface Props {focus:LayerId;activeYear:number;contextPlaces:boolean;change?:FeatureCollection;lang:Lang; records:ArchiveRecord[]; layers:Record<LayerId,boolean>;labels:boolean;terrain:boolean;research:Research;before?:Observation;after?:Observation;opacity:number;compare:boolean;divider:number;target:CameraTarget;onSelect:(a:ArchiveRecord)=>void;onCamera:(z:number)=>void;onReady:()=>void;onError:(s:string)=>void}
 const empty:FeatureCollection={type:'FeatureCollection',features:[]};
 function style(research:Research):StyleSpecification{
- return {version:8,sources:{countries:{type:'geojson',data:assetUrl('/data/countries.geojson')},rivers:{type:'geojson',data:assetUrl('/data/rivers.geojson')},window:{type:'geojson',data:{type:'Feature',properties:{},geometry:{type:'Polygon',coordinates:[[[106.2,29.2],[111.6,29.2],[111.6,31.5],[106.2,31.5],[106.2,29.2]]]}}},before:{type:'geojson',data:empty},after:{type:'geojson',data:empty},change:{type:'geojson',data:empty},residences:{type:'geojson',data:empty},...research.terrain?{elevation:{type:'raster-dem' as const,tiles:[assetUrl(research.terrain.tiles)],tileSize:256,encoding:research.terrain.encoding,minzoom:research.terrain.minzoom,maxzoom:research.terrain.maxzoom,attribution:research.terrain.attribution,bounds:research.terrain.bounds}}:{}},layers:[
+ return {version:8,sources:{countries:{type:'geojson',data:assetUrl('/data/countries.geojson')},rivers:{type:'geojson',data:assetUrl('/data/rivers.geojson')},before:{type:'geojson',data:empty},after:{type:'geojson',data:empty},change:{type:'geojson',data:empty},residences:{type:'geojson',data:empty},...research.terrain?{elevation:{type:'raster-dem' as const,tiles:[assetUrl(research.terrain.tiles)],tileSize:256,encoding:research.terrain.encoding,minzoom:research.terrain.minzoom,maxzoom:research.terrain.maxzoom,attribution:research.terrain.attribution,bounds:research.terrain.bounds}}:{}},layers:[
  {id:'paper',type:'background',paint:{'background-color':'#91aaa5'}},
  {id:'land',type:'fill',source:'countries',paint:{'fill-color':'#eee7d5','fill-opacity':1}},
  {id:'china',type:'fill',source:'countries',filter:['==',['get','code'],'CHN'],paint:{'fill-color':'#e9e3d1'}},
@@ -18,7 +18,6 @@ function style(research:Research):StyleSpecification{
  {id:'tributaries',type:'line',source:'rivers',filter:['!=',['get','yangtze'],true],paint:{'line-color':'#8fa9a3','line-width':['interpolate',['linear'],['zoom'],3,0.4,9,1.3],'line-opacity':0.6}},
  {id:'yangtze-glow',type:'line',source:'rivers',filter:['==',['get','yangtze'],true],paint:{'line-color':'#f4edda','line-width':5,'line-opacity':0.65}},
  {id:'yangtze',type:'line',source:'rivers',filter:['==',['get','yangtze'],true],paint:{'line-color':'#567d78','line-width':['interpolate',['linear'],['zoom'],3,1.6,8,2.5]}},
- {id:'study-window',type:'line',source:'window',maxzoom:6,paint:{'line-color':'#ad795e','line-width':1,'line-dasharray':[4,4],'line-opacity':0.6}},
  {id:'before-fill',type:'fill',source:'before',paint:{'fill-color':'#ca9d7d','fill-opacity':0.65}},
  {id:'before-line',type:'line',source:'before',paint:{'line-color':'#a36f53','line-width':1}},
  {id:'after-fill',type:'fill',source:'after',paint:{'fill-color':'#8eaaa4','fill-opacity':0.65}},
@@ -38,7 +37,7 @@ export default function MapView(p:Props){
  useEffect(()=>{
   if(!container.current)return;
   let m:GLMap;
-  try {m=new maplibregl.Map({container:container.current,style:style(p.research),center:p.target.center,zoom:p.target.zoom,minZoom:2,maxZoom:13,attributionControl:{compact:true,customAttribution:'Natural Earth · Public domain | Dam: WRI · CC BY 4.0 | Context, not dated shorelines'},renderWorldCopies:false});} catch {setFailed(true);p.onError('WebGL could not start. Try a browser with hardware acceleration.');return;}
+  try {m=new maplibregl.Map({container:container.current,style:style(p.research),center:p.target.center,zoom:p.target.zoom,minZoom:10.8,maxZoom:13,maxBounds:localNavigationBounds,attributionControl:{compact:true,customAttribution:'Natural Earth · Public domain | Dam: WRI · CC BY 4.0 | Context, not dated shorelines'},renderWorldCopies:false});} catch {setFailed(true);p.onError('WebGL could not start. Try a browser with hardware acceleration.');return;}
   map.current=m;
   m.addControl(new maplibregl.NavigationControl({showCompass:true,visualizePitch:false}),'bottom-right');
   m.addControl(new maplibregl.ScaleControl({unit:'metric'}),'bottom-left');
@@ -53,7 +52,7 @@ export default function MapView(p:Props){
  // The catalogue is loaded before this component is mounted.
  // eslint-disable-next-line react-hooks/exhaustive-deps
  },[p.research]);
- useEffect(()=>{const m=map.current;if(!ready||!m)return;const duration=p.target.seq===0||window.matchMedia('(prefers-reduced-motion: reduce)').matches?0:1800;if(p.target.bounds)m.fitBounds(p.target.bounds,{padding:35,duration});else if(p.target.zoom<5)m.fitBounds([[73,18],[135,54]],{padding:35,duration});else m.flyTo({center:p.target.center,zoom:p.target.zoom,duration,essential:false});},[p.target,ready]);
+ useEffect(()=>{const m=map.current;if(!ready||!m)return;const duration=p.target.seq===0||window.matchMedia('(prefers-reduced-motion: reduce)').matches?0:1800;if(p.target.bounds)m.fitBounds(p.target.bounds,{padding:35,duration});else m.flyTo({center:p.target.center,zoom:Math.max(10.8,p.target.zoom),duration,essential:false});},[p.target,ready]);
  useEffect(()=>{
   const m=map.current;if(!m||!ready)return;
   const markers:maplibregl.Marker[]=[];const cityElements:HTMLElement[]=[];
@@ -94,7 +93,7 @@ export default function MapView(p:Props){
  useEffect(()=>{
   if(!p.compare||!secondary.current||!map.current||!ready)return;
   const main=map.current;
-  const c=new maplibregl.Map({container:secondary.current,style:style(p.research),center:main.getCenter(),zoom:main.getZoom(),bearing:main.getBearing(),pitch:main.getPitch(),interactive:false,attributionControl:false,renderWorldCopies:false});comparison.current=c;
+  const c=new maplibregl.Map({container:secondary.current,style:style(p.research),center:main.getCenter(),zoom:main.getZoom(),bearing:main.getBearing(),pitch:main.getPitch(),interactive:false,minZoom:10.8,maxZoom:13,maxBounds:localNavigationBounds,attributionControl:false,renderWorldCopies:false});comparison.current=c;
   c.on('load',()=>{
    const v=latest.current;(c.getSource('after') as GeoJSONSource).setData(v.after?.geometry||empty);
    for(const id of ['before-fill','before-line'])c.setLayoutProperty(id,'visibility','none');

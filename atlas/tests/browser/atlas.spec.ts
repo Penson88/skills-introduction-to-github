@@ -7,12 +7,11 @@ test('map, archive, honest gaps, timeline, languages and sources',async({page})=
  await expect(page.getByRole('button',{name:'Compare water extents'})).toBeDisabled();
  await page.getByRole('button',{name:'02 Submergence & displacement'}).click();await expect(page.getByRole('button',{name:'Play water changes'})).toBeDisabled();await page.getByRole('button',{name:'01 Before the dam'}).click();
  await page.screenshot({path:'test-results/atlas-desktop.png',fullPage:true});
- await page.getByRole('button',{name:'Return to China overview'}).click();
- await page.getByRole('button',{name:'ENTER THE THREE GORGES'}).click();
+ await page.getByRole('button',{name:'Return to Yiling local view'}).click();
  await expect(page.getByRole('combobox',{name:'Research location'})).toBeVisible();
- await page.getByRole('combobox',{name:'Research location'}).selectOption('REF-001');
- await expect(page.getByRole('heading',{name:'Yichang · downstream reference'})).toBeVisible();
- await expect(page.getByText('No settlement impact asserted')).toBeVisible();
+ await page.getByRole('combobox',{name:'Research location'}).selectOption('DAM-001');
+ await expect(page.getByRole('heading',{name:'Three Gorges Dam · inventory location'})).toBeVisible();
+ await expect(page.getByText('No residential extent or impact inferred')).toBeVisible();
  await page.getByRole('button',{name:'Archive',exact:false}).first().click();
  await page.locator('.archive-filter select').selectOption('settlements');
  await expect(page.getByText('No verified records in this category yet.')).toBeVisible();
@@ -41,7 +40,7 @@ test('synthetic test-only imports enable aligned swipe and reject tampered cover
  const polygon=(east:number)=>({type:'FeatureCollection',features:[{type:'Feature',properties:{fixture:'SYNTHETIC TEST ONLY'},geometry:{type:'Polygon',coordinates:[[[110,30],[east,30],[east,31],[110,31],[110,30]]]}}]});
  const coverage=JSON.stringify(polygon(112));const hash=createHash('sha256').update(coverage).digest('hex');
  const observation=(year:number)=>({id:`test-${year}`,year,title:'SYNTHETIC TEST ONLY',sourceUrl:'https://example.org/test',source:'Synthetic browser fixture',license:'Test only',dateRange:[`${year}-01-01`,`${year}-12-31`],crs:'OGC:CRS84',method:'Synthetic test; not research data',resolution:30,coverageId:'sha256:'+hash,coverageUrl:'/data/test-coverage.geojson',classification:'annual-seasonal-and-permanent',dataUrl:`/data/test-${year}.geojson`});
- const home=(id:string,fromYear:number,toYear:number)=>({id,title:{en:`SYNTHETIC ${id}`,zh:`测试 ${id}`},category:'settlements',period:{en:'Synthetic period',zh:'测试时期'},summary:{en:'Synthetic test only',zh:'仅用于测试'},notes:{en:'Not real evidence',zh:'非真实证据'},coordinates:[110.5,30.5],certainty:'source-located',evidence:'documented',source:'Synthetic browser fixture',sourceUrl:'https://example.org/test',rights:'Test only',impact:{en:'No actual impact',zh:'无真实影响'},residence:{fromYear,toYear,kind:'residential-footprint',sourceUrl:'https://example.org/test',method:'Synthetic fixture only',footprintUrl:'/data/test-homes.geojson'}});
+ const home=(id:string,fromYear:number,toYear:number)=>({id,title:{en:`SYNTHETIC ${id}`,zh:`测试 ${id}`},category:'settlements',period:{en:'Synthetic period',zh:'测试时期'},summary:{en:'Synthetic test only',zh:'仅用于测试'},notes:{en:'Not real evidence',zh:'非真实证据'},coordinates:[111.0032,30.8235],certainty:'source-located',evidence:'documented',source:'Synthetic browser fixture',sourceUrl:'https://example.org/test',rights:'Test only',impact:{en:'No actual impact',zh:'无真实影响'},residence:{fromYear,toYear,kind:'residential-footprint',sourceUrl:'https://example.org/test',method:'Synthetic fixture only',footprintUrl:'/data/test-homes.geojson'}});
  await page.route('**/data/test-homes.geojson',r=>r.fulfill({json:polygon(111)}));
  await page.route('**/data/research.json',r=>r.fulfill({json:{version:1,observations:[observation(1987),observation(2021)],archives:[home('OLD-TOWN',1980,1999),home('NEW-TOWN',2000,2021)],terrain:null}}));
  await page.route('**/data/test-coverage.geojson',r=>r.fulfill({contentType:'application/json',body:coverage}));

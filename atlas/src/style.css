@@ -42,3 +42,8 @@
 .layer-options{border-top:1px solid var(--line)}.layer-options summary{padding:15px 28px;font-size:9px;letter-spacing:.5px;cursor:pointer;color:#4b6c62}.layer-options summary:hover{color:#a36f53}.layer-options .layer-section{border-top:0;padding-top:5px}.residence-patch{background:#294d47!important;border:1px solid #203e3c}
 @media(max-width:800px){.phase-note{padding:25px 28px}.phase-note h2{font-size:35px}.layer-options summary{padding:17px 28px}}
 @media(max-width:480px){.phase-note,.layer-options summary{padding-left:25px;padding-right:25px}.phase-note h2{font-size:31px}}
+/* Fixed local navigation: never return to the national or whole-reservoir view. */
+.map-topline .map-index{pointer-events:auto;font-size:8px;padding:4px 0;white-space:nowrap}
+@media(max-width:480px){.map-topline .map-index{font-size:7px;letter-spacing:.3px}.breadcrumb{gap:5px}}
+.precision-note{left:auto;right:30px;bottom:120px;max-width:220px}.map-bottom-caption{left:155px;bottom:28px;font-size:6px;letter-spacing:.4px}
+@media(max-width:480px){.precision-note{right:18px;bottom:140px;max-width:200px}.map-bottom-caption{left:135px;font-size:5px;max-width:175px}.map-bottom-caption>span:last-child{display:none}}
